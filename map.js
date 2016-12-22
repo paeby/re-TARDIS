@@ -13,10 +13,10 @@ function load_data(url, variable, type){
     return value;
 }
 
-var stops = load_data("http://127.0.0.1:8887/stops.json", stops, "json")
-var centers = load_data("http://127.0.0.1:8887/centers.json", centers,"json")
-var nodes = load_data("http://127.0.0.1:8887/nodes", nodes,"json")
-var matrix = eval(load_data("http://127.0.0.1:8887/matrix", matrix,"text"))
+var stops = load_data("http://switzograms.ch/tardis/stops.json", stops, "json")
+var centers = load_data("http://switzograms.ch/tardis/centers.json", centers,"json")
+var nodes = load_data("http://switzograms.ch/tardis/nodes", nodes,"json")
+var matrix = eval(load_data("http://switzograms.ch/tardis/matrix", matrix,"text"))
 
 // ----- THREE VARIABLES -----
 var Stats;
