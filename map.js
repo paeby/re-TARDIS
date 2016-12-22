@@ -50,10 +50,12 @@ function setListeners(){
 }
 
 function setRenderer(container){
-    renderer = new THREE.WebGLRenderer();
+    renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize( window.innerWidth, window.innerHeight );
-    container.appendChild( renderer.domElement );    
+    container.appendChild( renderer.domElement );
+    renderer.gammaInput = true;
+    renderer.gammaOutput = true;    
 }
 
 function setStats(container){
