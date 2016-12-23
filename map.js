@@ -99,14 +99,7 @@ function setTiles(){
     generateColorPalette();
 
     // Create points from stops
-    var dotGeometry = new THREE.Geometry();
-    for (var s in stops) {
-	createStop(stops[s]);
-    }
-    var dotMaterial = new THREE.PointsMaterial( { size: 1.3, sizeAttenuation: false, color: 0x664200 } );
-    var dot = new THREE.Points( dotGeometry, dotMaterial );
-    dot.name = 'stops';
-    scene.add( dot );
+    genPoints();
 
     
     var material = new THREE.MeshPhongMaterial( { color: 0xffffff, overdraw: 0.5, shading: THREE.FlatShading } );
@@ -114,7 +107,6 @@ function setTiles(){
     for(var c in centers){
 	createTile(centers[c])
     }
-
 
 
     function createTile(t) {
@@ -134,15 +126,24 @@ function setTiles(){
     }
 
 
-    function createStop(s){
-	var height = s.h*height_factor+height_base + 0.1;	
-	dotGeometry.vertices.push(new THREE.Vector3(s.x, s.y, height));
-    }
+
 
 }
-function de2ra(degree) {
-    return degree*(Math.PI/180);
+
+function genPoints() {
+    var dotGeometry = new THREE.Geometry();
+
+    for (var stop in stops) {
+	var s = stops[stop];
+
+	var height = s.h*height_factor+height_base + 0.1;	
+	dotGeometry.vertices.push(new THREE.Vector3(s.x, s.y, height));	
+    }
+    var dotMaterial = new THREE.PointsMaterial( { size: 1.3, sizeAttenuation: false, color: 0x664200 } );
+    var dot = new THREE.Points( dotGeometry, dotMaterial );
+    scene.add( dot );
 }
+
 
 function updateColor(id, color){
     scene.traverse (function (object) {
