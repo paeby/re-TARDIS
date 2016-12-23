@@ -83,7 +83,7 @@ function setTiles(){
     var y_diameter = 2886.7526918968869725;
     var material = new THREE.MeshPhysicalMaterial( {
 	color: new THREE.Color("#002259"),
-	metalness: 0.5,
+	metalness: 0,
 	roughness: 0.5,
 	clearCoat:  1.0,
 	clearCoatRoughness: 1.0,
@@ -222,14 +222,15 @@ function setLights(){
 function setControls(){
     // Controls (when moving mouse)
     controls = new THREE.OrbitControls( camera, renderer.domElement );
-    console.log(controls.getAzimuthalAngle());
     controls.enableDamping = true;
     controls.dampingFactor = 0.25;
     controls.enableZoom = true;
     controls.minZoom = 2;
     controls.maxZoom = 15;
-    controls.minAzimuthAngle = -Math.PI/2;;
-    controls.maxAzimuthAngle = Math.PI/2;
+    controls.minPolarAngle = Math.PI/3; // radians
+    controls.maxPolarAngle = 2*Math.PI/3; // radians	
+    controls.minAzimuthAngle = -Math.PI/3;;
+    controls.maxAzimuthAngle = Math.PI/3;
     controls.rotateSpeed = 0.5;
     controls.zoomSpeed = 1.2;
 }
