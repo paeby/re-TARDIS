@@ -55,6 +55,7 @@ var min;
 var light;
 
 var diameter = 3.2
+var height_fly = 30;
 var height_base = 5.0;
 var height_factor = 4.0;    
 
@@ -70,6 +71,7 @@ function init(){
     setLights();
     setRenderer(container)        
     setStats(container);
+    setFloor()
     setTiles();
 
 }
@@ -79,6 +81,14 @@ function setListeners(){
     window.addEventListener( 'resize', onWindowResize, false );
 }
 
+function setFloor() {
+    var geoFloor = new THREE.BoxGeometry( 4000, 4000, 1 );
+    var matFloor = new THREE.MeshPhongMaterial({color: 0x323232 } );
+    var mshFloor = new THREE.Mesh( geoFloor, matFloor );
+    mshFloor.receiveShadow = true;
+    scene.add(mshFloor);
+    
+}
 function setRenderer(container){
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setClearColor( 0x323232 );    
@@ -86,7 +96,9 @@ function setRenderer(container){
     renderer.setSize( window.innerWidth, window.innerHeight );
     container.appendChild( renderer.domElement );
     renderer.gammaInput = true;
-    renderer.gammaOutput = true;    
+    renderer.gammaOutput = true;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;    
 }
 
 function setStats(container){
@@ -106,7 +118,7 @@ function setTiles(){
 }
 
 function genTiles() {
-    var material = new THREE.MeshPhongMaterial( { color: 0xffffff, overdraw: 0.5, shading: THREE.FlatShading } );    
+    var material = new THREE.MeshPhongMaterial( { color: 0x5e7eff, overdraw: 0.5, shading: THREE.FlatShading } );    
     var dashed = new THREE.LineDashedMaterial( { color: 0xffaa00, dashSize: 3, gapSize: 1, linewidth: 2 } );
     for(var c in centers){
 	createTile(centers[c])
@@ -117,7 +129,7 @@ function genTiles() {
 	var height = t.h*height_factor + height_base;
 	var cylinder = new THREE.CylinderGeometry( diameter, diameter, height, 6 );	
 	var tile = new THREE.Mesh( cylinder, material);
-	tile.position.set(t.x, t.y, height/2)
+	tile.position.set(t.x, t.y, height/2 + height_fly)
 	tile.rotation.x = Math.PI/2;
 	tile.rotation.y = Math.PI/2;
 	tile.name = "t"+t.ID;
@@ -125,7 +137,9 @@ function genTiles() {
 	tile.matrixAutoUpdate = false;
 	tile.callback = function(){
 	    updateMap(t.ID);
-	}; 
+	};
+	tile.castShadow = true;
+	tile.receiveShadow = true;	
 	scene.add(tile);
     }
 
@@ -162,7 +176,7 @@ function genPoints() {
     for (var stop in stops) {
 	var s = stops[stop];
 
-	var height = s.h*height_factor+height_base + 0.1;	
+	var height = s.h*height_factor+height_base + 0.1 + height_fly;	
 	dotGeometry.vertices.push(new THREE.Vector3(s.x, s.y, height));	
     }
     var dotMaterial = new THREE.PointsMaterial( { size: 1.3, sizeAttenuation: false, color: 0x664200 } );
@@ -238,13 +252,19 @@ function setCamera(){
 }
 
 function setLights(){
-    
-    light = new THREE.DirectionalLight( 0xaabbff, 0.2 );
-    light.position.x = 400;
-    light.position.y = 450
-    light.position.z = 500;
-    light.position.normalize();
-    scene.add( light );
+
+    var ambient = new THREE.AmbientLight( 0xffffff, 0.1 );
+    var spotLight = new THREE.SpotLight( 0xffffff, 1);
+    spotLight.position.set( -100, 100, 100 );
+    spotLight.castShadow = true;
+    spotLight.angle = Math.PI / 3;
+    spotLight.penumbra = 0.5;
+    spotLight.decay = 1;
+    spotLight.distance = 500;
+    spotLight.shadow.mapSize.width = 1024;
+    spotLight.shadow.mapSize.height = 1024;
+    scene.add( spotLight );
+    scene.add( ambient );    
 
 
 }
