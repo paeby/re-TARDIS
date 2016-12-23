@@ -1,22 +1,49 @@
-// ----- LOAD DATA -----
-function load_data(url, variable, type){
-    var value;
-    $.ajax({
-        type: "GET",
-        url: url,
-        dataType: type,
-        async: false,
-        success : function(data) {
-            value = data;
-        }
-    });
-    return value;
+var loader = new THREE.FileLoader();
+loader.load(
+    'stops.json',
+    function (json) {
+	stops = JSON.parse(json);
+	start()
+    }
+);
+
+loader.load(
+    'centers.json',
+    function (json) {
+	centers = JSON.parse(json);
+	start()
+    }
+);
+
+loader.load(
+    'nodes.json',
+    function (json) {
+	nodes = JSON.parse(json);
+	start()
+    }
+);
+
+loader.load(
+    'matrix.json',
+    function (json) {
+	matrix = JSON.parse(json);
+	start()
+    }
+);
+
+var to_load = 4;
+
+function start(){
+    to_load -= 1;
+    if (to_load == 0) {
+	init();
+	animate();
+    }
 }
 
-var stops = load_data("stops.json", stops, "json")
-var centers = load_data("centers.json", centers,"json")
-var nodes = load_data("nodes", nodes,"json")
-var matrix = eval(load_data("matrix", matrix,"text"))
+
+var stops, centers, nodes, matrix;
+
 
 // ----- THREE VARIABLES -----
 var Stats;
@@ -31,9 +58,6 @@ var diameter = 3.2
 var height_base = 5.0;
 var height_factor = 4.0;    
 
-
-init();
-animate();
 
 function init(){
 
