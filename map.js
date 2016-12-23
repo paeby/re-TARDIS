@@ -25,20 +25,26 @@ var raycaster = new THREE.Raycaster();
 var mouse = new THREE.Vector2();
 var colors = []; // hold the generated colors
 var min;
+var light;
+
+var diameter = 3.2
+var height_base = 5.0;
+var height_factor = 4.0;    
+
 
 init();
 animate();
 
-function init() {
+function init(){
 
+    var container = document.createElement( 'div' );
+    document.body.appendChild( container );
     scene = new THREE.Scene();
-    
-    var container = document.getElementById( 'container' );
-    setListeners();        
-    setRenderer(container)    
-    setLights();
+    setListeners();
     setCamera();
-    setControls();
+    setControls();    
+    setLights();
+    setRenderer(container)        
     setStats(container);
     setTiles();
 
@@ -51,6 +57,7 @@ function setListeners(){
 
 function setRenderer(container){
     renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setClearColor( 0x323232 );    
     renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize( window.innerWidth, window.innerHeight );
     container.appendChild( renderer.domElement );
@@ -72,33 +79,25 @@ function setTiles(){
     for (var s in stops) {
 	createStop(stops[s]);
     }
-    var dotMaterial = new THREE.PointCloudMaterial( { size: 1, sizeAttenuation: false } );
-    var dot = new THREE.PointCloud( dotGeometry, dotMaterial );
+    var dotMaterial = new THREE.PointsMaterial( { size: 1.3, sizeAttenuation: false, color: 0x664200 } );
+    var dot = new THREE.Points( dotGeometry, dotMaterial );
     dot.name = 'stops';
     scene.add( dot );
 
-    // Create tiles from centers
-    // Default values when creating tile
-    var x_diameter = 3333.334887501085177;
-    var y_diameter = 2886.7526918968869725;
-    var material = new THREE.MeshPhysicalMaterial( {
-	color: new THREE.Color("#002259"),
-	metalness: 0,
-	roughness: 0.5,
-	clearCoat:  1.0,
-	clearCoatRoughness: 1.0,
-	reflectivity: 1.0,
-    } );
     
+    var material = new THREE.MeshPhongMaterial( { color: 0xffffff, overdraw: 0.5, shading: THREE.FlatShading } );
+    var dashed = new THREE.LineDashedMaterial( { color: 0xffaa00, dashSize: 3, gapSize: 1, linewidth: 2 } );
     for(var c in centers){
 	createTile(centers[c])
     }
 
 
+
     function createTile(t) {
-	cylinder = new THREE.CylinderGeometry( y_diameter/1000.0, y_diameter/1000.0, t.h, 6 );
-	tile = new THREE.Mesh( cylinder, material);
-	tile.position.set(t.x,t.y, t.h/2)
+	var height = t.h*height_factor + height_base;
+	var cylinder = new THREE.CylinderGeometry( diameter, diameter, height, 6 );	
+	var tile = new THREE.Mesh( cylinder, material);
+	tile.position.set(t.x, t.y, height/2)
 	tile.rotation.x = Math.PI/2;
 	tile.rotation.y = Math.PI/2;
 	tile.name = "t"+t.ID;
@@ -112,7 +111,8 @@ function setTiles(){
 
 
     function createStop(s){
-	dotGeometry.vertices.push(new THREE.Vector3(s.x, s.y, s.h+0.1));
+	var height = s.h*height_factor+height_base + 0.1;	
+	dotGeometry.vertices.push(new THREE.Vector3(s.x, s.y, height));
     }
 
 }
@@ -123,9 +123,9 @@ function de2ra(degree) {
 function updateColor(id, color){
     scene.traverse (function (object) {
 	if (object.name === id){
-//	    var newMaterial = material.clone()
-//	    newMaterial.color.setRGB(color.r, color.g, color.b)
-//	    object.material = newMaterial;
+	    //	    var newMaterial = material.clone()
+	    //	    newMaterial.color.setRGB(color.r, color.g, color.b)
+	    //	    object.material = newMaterial;
 	}
     });
 }
@@ -202,33 +202,32 @@ function setCamera(){
     camera = new THREE.OrthographicCamera(
 	-width/factor , width/factor, height/factor, -height/factor, -1000, 2000 );
     camera.position.z = 100;
-//    camera.lookAt(scene.position);
     camera.zoom = width/900*2;
     camera.updateProjectionMatrix();    
 }
 
 function setLights(){
-    // Scene lights			
-    var ambientLight = new THREE.AmbientLight( 0xffffff );
-    scene.add( ambientLight );
     
-    var directionalLight = new THREE.DirectionalLight( 0xffffff );
-    directionalLight.position.y = 1000;
-    directionalLight.position.z = 1000;
-    directionalLight.position.normalize();
-    scene.add( directionalLight );
+    light = new THREE.DirectionalLight( 0xaabbff, 0.2 );
+    light.position.x = 400;
+    light.position.y = 450
+    light.position.z = 500;
+    light.position.normalize();
+    scene.add( light );
+
 
 }
+
 function setControls(){
     // Controls (when moving mouse)
-    controls = new THREE.OrbitControls( camera, renderer.domElement );
+    controls = new THREE.OrbitControls(camera);
     controls.enableDamping = true;
     controls.dampingFactor = 0.25;
     controls.enableZoom = true;
     controls.minZoom = 2;
     controls.maxZoom = 15;
-    controls.minPolarAngle = Math.PI/3; // radians
-    controls.maxPolarAngle = 2*Math.PI/3; // radians	
+    controls.minPolarAngle = Math.PI/6; 
+    controls.maxPolarAngle = 5*Math.PI/6;
     controls.minAzimuthAngle = -Math.PI/3;;
     controls.maxAzimuthAngle = Math.PI/3;
     controls.rotateSpeed = 0.5;
@@ -251,7 +250,7 @@ function onWindowResize(){
 
 function animate() {
     requestAnimationFrame( animate );
-//    controls.update();
+    //    controls.update();
     stats.update();
     render();
 
