@@ -101,8 +101,12 @@ function setTiles(){
     // Create points from stops
     genPoints();
 
-    
-    var material = new THREE.MeshPhongMaterial( { color: 0xffffff, overdraw: 0.5, shading: THREE.FlatShading } );
+    genTiles();    
+
+}
+
+function genTiles() {
+    var material = new THREE.MeshPhongMaterial( { color: 0xffffff, overdraw: 0.5, shading: THREE.FlatShading } );    
     var dashed = new THREE.LineDashedMaterial( { color: 0xffaa00, dashSize: 3, gapSize: 1, linewidth: 2 } );
     for(var c in centers){
 	createTile(centers[c])
@@ -126,8 +130,30 @@ function setTiles(){
     }
 
 
+    function updateMap(id){
+	var index = nodes.indexOf(id);
+	if (typeof index !== 'undefined' && index!== -1) {
+	    for(var station in nodes){
+		// ----- THIS IS JUST BECAUSE WE HAVE A MATRIX WITH STOP ID, then it will be easy with tile ids
+		var s_id = nodes[station];
+		var t_id = ($.grep(stops, function(e){ return e.stop_id == s_id; }))[0].ID;
+		console.log(t_id)
+		var time = matrix[index][station];
+		updateColor('t'+t_id, colors[time-min]);
+	    }
+	}
+    }
 
-
+    function updateColor(id, color){
+	scene.traverse (function (object) {
+	    if (object.name === id){
+		//	    var newMaterial = material.clone()
+		//	    newMaterial.color.setRGB(color.r, color.g, color.b)
+		//	    object.material = newMaterial;
+	    }
+	});
+    }    
+    
 }
 
 function genPoints() {
@@ -145,29 +171,7 @@ function genPoints() {
 }
 
 
-function updateColor(id, color){
-    scene.traverse (function (object) {
-	if (object.name === id){
-	    //	    var newMaterial = material.clone()
-	    //	    newMaterial.color.setRGB(color.r, color.g, color.b)
-	    //	    object.material = newMaterial;
-	}
-    });
-}
 
-function updateMap(id){
-    var index = nodes.indexOf(id);
-    if (typeof index !== 'undefined' && index!== -1) {
-	for(var station in nodes){
-	    // ----- THIS IS JUST BECAUSE WE HAVE A MATRIX WITH STOP ID, then it will be easy with tile ids
-	    var s_id = nodes[station];
-	    var t_id = ($.grep(stops, function(e){ return e.stop_id == s_id; }))[0].ID;
-	    console.log(t_id)
-	    var time = matrix[index][station];
-	    updateColor('t'+t_id, colors[time-min]);
-	}
-    }
-}
 
 function generateColorPalette() {
     var arr = matrix.reduce(function (p, c) {
@@ -182,26 +186,28 @@ function generateColorPalette() {
     {
 	colors.push(HSVtoRGB((i * x)/360, 0.8, 0.8)); // you can also alternate the saturation and value for even more contrast between the colors
     }
-}
 
-function HSVtoRGB(h, s, v) {
-    var r, g, b;
 
-    var i = Math.floor(h * 6);
-    var f = h * 6 - i;
-    var p = v * (1 - s);
-    var q = v * (1 - f * s);
-    var t = v * (1 - (1 - f) * s);
+    function HSVtoRGB(h, s, v) {
+	var r, g, b;
 
-    switch (i % 6) {
-    case 0: r = v, g = t, b = p; break;
-    case 1: r = q, g = v, b = p; break;
-    case 2: r = p, g = v, b = t; break;
-    case 3: r = p, g = q, b = v; break;
-    case 4: r = t, g = p, b = v; break;
-    case 5: r = v, g = p, b = q; break;
+	var i = Math.floor(h * 6);
+	var f = h * 6 - i;
+	var p = v * (1 - s);
+	var q = v * (1 - f * s);
+	var t = v * (1 - (1 - f) * s);
+
+	switch (i % 6) {
+	case 0: r = v, g = t, b = p; break;
+	case 1: r = q, g = v, b = p; break;
+	case 2: r = p, g = v, b = t; break;
+	case 3: r = p, g = q, b = v; break;
+	case 4: r = t, g = p, b = v; break;
+	case 5: r = v, g = p, b = q; break;
+	}
+	return { r:r, g:g, b:b };
     }
-    return { r:r, g:g, b:b };
+    
 }
 
 function onDocumentMouseDown( e ) {
