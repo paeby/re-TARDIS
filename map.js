@@ -98,9 +98,9 @@ function setTiles(){
     function createTile(t) {
 	cylinder = new THREE.CylinderGeometry( y_diameter/1000.0, y_diameter/1000.0, t.h, 6 );
 	tile = new THREE.Mesh( cylinder, material);
-	tile.position.set(-t.x,t.y,-0.5*t.h)
-	tile.rotation.x = de2ra(90);
-	tile.rotation.y = de2ra(90);
+	tile.position.set(t.x,t.y, t.h/2)
+	tile.rotation.x = Math.PI/2;
+	tile.rotation.y = Math.PI/2;
 	tile.name = "t"+t.ID;
 	tile.updateMatrix();
 	tile.matrixAutoUpdate = false;
@@ -112,7 +112,7 @@ function setTiles(){
 
 
     function createStop(s){
-	dotGeometry.vertices.push(new THREE.Vector3(-s.x, s.y, -s.h-0.1));
+	dotGeometry.vertices.push(new THREE.Vector3(s.x, s.y, s.h+0.1));
     }
 
 }
@@ -123,9 +123,9 @@ function de2ra(degree) {
 function updateColor(id, color){
     scene.traverse (function (object) {
 	if (object.name === id){
-	    var newMaterial = material.clone()
-	    newMaterial.color.setRGB(color.r, color.g, color.b)
-	    object.material = newMaterial;
+//	    var newMaterial = material.clone()
+//	    newMaterial.color.setRGB(color.r, color.g, color.b)
+//	    object.material = newMaterial;
 	}
     });
 }
@@ -200,9 +200,11 @@ function setCamera(){
     var width = window.innerWidth;
     var height = window.innerHeight;    
     camera = new THREE.OrthographicCamera(
-	-width/factor , width/factor, height/factor, -height/factor, 1, 1000 );
-    camera.position.z = -100;
-    camera.lookAt(scene.position);
+	-width/factor , width/factor, height/factor, -height/factor, -1000, 2000 );
+    camera.position.z = 100;
+//    camera.lookAt(scene.position);
+    camera.zoom = width/900*2;
+    camera.updateProjectionMatrix();    
 }
 
 function setLights(){
@@ -212,7 +214,7 @@ function setLights(){
     
     var directionalLight = new THREE.DirectionalLight( 0xffffff );
     directionalLight.position.y = 1000;
-    directionalLight.position.z = -1000;
+    directionalLight.position.z = 1000;
     directionalLight.position.normalize();
     scene.add( directionalLight );
 
@@ -220,9 +222,14 @@ function setLights(){
 function setControls(){
     // Controls (when moving mouse)
     controls = new THREE.OrbitControls( camera, renderer.domElement );
+    console.log(controls.getAzimuthalAngle());
     controls.enableDamping = true;
     controls.dampingFactor = 0.25;
     controls.enableZoom = true;
+    controls.minZoom = 2;
+    controls.maxZoom = 15;
+    controls.minAzimuthAngle = -Math.PI/2;;
+    controls.maxAzimuthAngle = Math.PI/2;
     controls.rotateSpeed = 0.5;
     controls.zoomSpeed = 1.2;
 }
@@ -243,7 +250,7 @@ function onWindowResize(){
 
 function animate() {
     requestAnimationFrame( animate );
-    controls.update();
+//    controls.update();
     stats.update();
     render();
 
