@@ -43,21 +43,22 @@ function start(){
 
 
 var stops, centers, nodes, matrix;
-
-
-// ----- THREE VARIABLES -----
-var Stats;
-var camera, controls, scene, renderer;
-var raycaster = new THREE.Raycaster();
-var mouse = new THREE.Vector2();
-var colors = []; // hold the generated colors
-var min;
-var light;
+//----------------------------
 
 var diameter = 3.2
 var height_fly = 30;
 var height_base = 5.0;
 var height_factor = 4.0;    
+
+// ----- THREE VARIABLES -----
+var Stats;
+var camera, controls, scene, renderer;
+var raycaster = new THREE.Raycaster();
+var tiles = []
+var colors = []; // hold the generated colors
+var min;
+var light;
+var lastDown = 0;
 
 
 function init(){
@@ -77,7 +78,8 @@ function init(){
 }
 
 function setListeners(){
-    document.addEventListener( 'click', onDocumentClick, false );
+    document.addEventListener( 'mousedown', onDocumentDown, false );    
+    document.addEventListener( 'mouseup', onDocumentUp, false );
     window.addEventListener( 'resize', onWindowResize, false );
 }
 
@@ -141,7 +143,8 @@ function genTiles() {
 	    updateMap(t.ID);
 	};
 	tile.castShadow = true;
-	tile.receiveShadow = true;	
+	tile.receiveShadow = true;
+	tiles.push(tile);
 	scene.add(tile);
     }
 
@@ -226,19 +229,28 @@ function generateColorPalette() {
     
 }
 
-function onDocumentClick( e ) {
+//to implement click timeout
+function onDocumentDown(event) {
+    lastDown = event.timeStamp
+}
+
+function onDocumentUp(event) {
+    if (event.timeStamp - lastDown <= 200){
+	click(event);
+    }
+}
+
+function click(event) {
     event.preventDefault();
+    var mouse = new THREE.Vector2();    
     mouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
     mouse.y = - ( event.clientY / renderer.domElement.clientHeight ) * 2 + 1;
     raycaster.setFromCamera( mouse, camera );
-    var intersects = raycaster.intersectObjects( scene.children ); 
+    var intersects = raycaster.intersectObjects( tiles ); 
     if ( intersects.length > 0 ) {
-	console.log(intersects[0].object);
-	//intersects[0].object.callback();
-	var name = intersects[0].object.name.substring(1);
-	// When we will have the travel distance between tiles
-	//updateMap(+name);
-	//updateMap(8508759);
+	var tile = intersects[0].object;
+	console.log(tile);
+
     }
 }
 
