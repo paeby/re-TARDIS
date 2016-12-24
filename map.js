@@ -125,6 +125,7 @@ function setTiles(){
 function genTiles() {
     var material = new THREE.MeshPhongMaterial( { color: 0x5e7eff, overdraw: 0.5, shading: THREE.FlatShading, shininess:0, specular:0} );    
 
+    
     for(var c in centers){
 	createTile(centers[c])
     }
@@ -132,20 +133,26 @@ function genTiles() {
 
     function createTile(t) {
 	var height = t.h*height_factor + height_base;
-	var cylinder = new THREE.CylinderGeometry( diameter, diameter, height, 6 );	
-	var tile = new THREE.Mesh( cylinder, material);
+	var geometry = new THREE.CylinderGeometry( diameter, diameter, height, 6 );
+	var tile = new THREE.Mesh( geometry, material);
+	
 	tile.position.set(t.x, t.y, height/2 + height_fly)
 	tile.rotation.x = Math.PI/2;
 	tile.rotation.y = Math.PI/2;
-	tile.name = "t"+t.ID;
 	tile.updateMatrix();
 	tile.matrixAutoUpdate = false;
+	
+
+	tile.name = "t"+t.ID;	
 	tile.callback = function(){
 	    updateMap(t.ID);
 	};
+	
 	tile.castShadow = true;
 	tile.receiveShadow = true;
+	
 	tiles.push(tile);
+	
 	scene.add(tile);
     }
 
@@ -187,7 +194,7 @@ function genPoints() {
     var vertex = new THREE.Vector3();
     for (var stop in stops) {
 	var s = stops[stop];
-	var height = 0;//s.h*height_factor+height_base + 0.2 + height_fly;	
+	var height = s.h*height_factor+height_base + 0.2 + height_fly;	
     	vertex.x = s.x
 	vertex.y = s.y
 	vertex.z = height
@@ -261,13 +268,19 @@ function generateColorPalette() {
 function onDocumentDown(event) {
     lastDown = event.timeStamp
     console.log(camera.zoom, camera.position.z);
-    dots.visible = true;    
+    dots.visible = true;
+    for (var t in tiles) {
+	tiles[t].visible = false;
+    }
 }
 
 function onDocumentUp(event) {
     if (event.timeStamp - lastDown <= 200){
 	click(event);
     }
+    for (var t in tiles) {
+	tiles[t].visible = true;
+    }    
     dots.visible = false;    
 }
 
