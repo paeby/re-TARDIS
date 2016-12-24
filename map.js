@@ -118,8 +118,8 @@ function setTiles(){
 }
 
 function genTiles() {
-    var material = new THREE.MeshPhongMaterial( { color: 0x5e7eff, overdraw: 0.5, shading: THREE.FlatShading } );    
-    var dashed = new THREE.LineDashedMaterial( { color: 0xffaa00, dashSize: 3, gapSize: 1, linewidth: 2 } );
+    var material = new THREE.MeshPhongMaterial( { color: 0x5e7eff, overdraw: 0.5, shading: THREE.FlatShading, shininess:0, specular:0} );    
+
     for(var c in centers){
 	createTile(centers[c])
     }
@@ -164,7 +164,7 @@ function genTiles() {
 		//	    var newMaterial = material.clone()
 		//	    newMaterial.color.setRGB(color.r, color.g, color.b)
 		//	    object.material = newMaterial;
-	    }
+	   } 
 	});
     }    
     
@@ -253,17 +253,19 @@ function setCamera(){
 
 function setLights(){
 
-    var ambient = new THREE.AmbientLight( 0xffffff, 0.1 );
-    var spotLight = new THREE.SpotLight( 0xffffff, 1);
-    spotLight.position.set( -100, 100, 100 );
+    var ambient = new THREE.AmbientLight( 0xffffff, 0.15 );
+    var spotLight = new THREE.SpotLight( 0xffffff, 0.5);
+    spotLight.position.set( 70, 0, 250 );
+    spotLight.target.position.set( 30, 0, 0 );    
     spotLight.castShadow = true;
-    spotLight.angle = Math.PI / 3;
+    spotLight.angle = Math.PI / 4;
     spotLight.penumbra = 0.5;
     spotLight.decay = 1;
     spotLight.distance = 500;
     spotLight.shadow.mapSize.width = 1024;
     spotLight.shadow.mapSize.height = 1024;
     scene.add( spotLight );
+    scene.add( spotLight.target );        
     scene.add( ambient );    
 
 
