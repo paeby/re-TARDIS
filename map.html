@@ -15,6 +15,23 @@
 		<script src="http://threejs.org/examples/js/libs/stats.min.js"></script>
 		<script src="http://code.jquery.com/jquery-latest.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.2/require.js"></script>
+		<script type="x-shader/x-vertex" id="vertexshader">
+			attribute float size;		  
+			void main() {
+				vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+				gl_PointSize = size * (300.0/-mvPosition.z);
+				gl_Position = projectionMatrix * mvPosition;
+			}
+		</script>
+
+		<script type="x-shader/x-fragment" id="fragmentshader">
+			uniform vec3 color;
+			uniform sampler2D texture;
+			void main() {
+				gl_FragColor = vec4( color, 1.0 );
+				gl_FragColor = gl_FragColor * texture2D( texture, gl_PointCoord );
+			}
+		</script>		
 		<script src="map.js" ></script>
 	</body>
 </html>

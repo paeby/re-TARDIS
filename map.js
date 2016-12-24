@@ -48,7 +48,8 @@ var stops, centers, nodes, matrix;
 var diameter = 3.2
 var height_fly = 30;
 var height_base = 5.0;
-var height_factor = 4.0;    
+var height_factor = 4.0;
+var dotSize = 6.0;
 
 // ----- THREE VARIABLES -----
 var Stats;
@@ -59,7 +60,7 @@ var colors = []; // hold the generated colors
 var min;
 var light;
 var lastDown = 0;
-
+var dots;
 
 function init(){
 
@@ -150,17 +151,19 @@ function genTiles() {
 
 
     function updateMap(id){
-	var index = nodes.indexOf(id);
-	if (typeof index !== 'undefined' && index!== -1) {
-	    for(var station in nodes){
+	console.log("update: " + id)
+	/*	var index = nodes.indexOf(id);
+		if (typeof index !== 'undefined' && index!== -1) {
+		for(var station in nodes){
 		// ----- THIS IS JUST BECAUSE WE HAVE A MATRIX WITH STOP ID, then it will be easy with tile ids
 		var s_id = nodes[station];
 		var t_id = ($.grep(stops, function(e){ return e.stop_id == s_id; }))[0].ID;
 		console.log(t_id)
 		var time = matrix[index][station];
 		updateColor('t'+t_id, colors[time-min]);
-	    }
-	}
+		}
+		}
+	*/
     }
 
     function updateColor(id, color){
@@ -169,24 +172,49 @@ function genTiles() {
 		//	    var newMaterial = material.clone()
 		//	    newMaterial.color.setRGB(color.r, color.g, color.b)
 		//	    object.material = newMaterial;
-	   } 
+	    } 
 	});
     }    
     
 }
 
 function genPoints() {
-    var dotGeometry = new THREE.Geometry();
 
+    var amount = stops.length
+    var positions = new Float32Array( amount * 3 );
+    var sizes = new Float32Array( amount );    
+    var colors = new Float32Array( amount * 3 );
+    var vertex = new THREE.Vector3();
     for (var stop in stops) {
 	var s = stops[stop];
+	var height = 0;//s.h*height_factor+height_base + 0.2 + height_fly;	
+    	vertex.x = s.x
+	vertex.y = s.y
+	vertex.z = height
+	vertex.toArray( positions, stop * 3 );
+	sizes[ stop ] = dotSize;	
+    }    
 
-	var height = s.h*height_factor+height_base + 0.1 + height_fly;	
-	dotGeometry.vertices.push(new THREE.Vector3(s.x, s.y, height));	
-    }
-    var dotMaterial = new THREE.PointsMaterial( { size: 1.3, sizeAttenuation: false, color: 0x664200 } );
-    var dot = new THREE.Points( dotGeometry, dotMaterial );
-    scene.add( dot );
+    var geometry = new THREE.BufferGeometry();
+    geometry.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
+    geometry.addAttribute( 'size', new THREE.BufferAttribute( sizes, 1 ) );
+    
+    var material = new THREE.ShaderMaterial( {
+	uniforms: {
+	    color:     { value: new THREE.Color( 0x664200 ) },
+	    texture:   { value: new THREE.TextureLoader().load( "spark1.png" ) }
+	},
+	vertexShader:   document.getElementById( 'vertexshader' ).textContent,
+	fragmentShader: document.getElementById( 'fragmentshader' ).textContent,
+	blending:       THREE.AdditiveBlending,
+	depthTest:      false,
+	transparent:    true
+    });    
+    //    var material = new THREE.PointsMaterial( { size: 2, sizeAttenuation: false, color: 0x664200 } );
+    
+    dots = new THREE.Points( geometry, material );
+    scene.add( dots );
+    dots.visible = false;
 }
 
 
@@ -232,12 +260,15 @@ function generateColorPalette() {
 //to implement click timeout
 function onDocumentDown(event) {
     lastDown = event.timeStamp
+    console.log(camera.zoom, camera.position.z);
+    dots.visible = true;    
 }
 
 function onDocumentUp(event) {
     if (event.timeStamp - lastDown <= 200){
 	click(event);
     }
+    dots.visible = false;    
 }
 
 function click(event) {
@@ -249,8 +280,7 @@ function click(event) {
     var intersects = raycaster.intersectObjects( tiles ); 
     if ( intersects.length > 0 ) {
 	var tile = intersects[0].object;
-	console.log(tile);
-
+	tile.callback();
     }
 }
 
@@ -260,7 +290,7 @@ function setCamera(){
     var height = window.innerHeight;    
     camera = new THREE.OrthographicCamera(
 	-width/factor , width/factor, height/factor, -height/factor, -1000, 2000 );
-    camera.position.z = 100;
+    camera.position.z = 300;
     camera.zoom = width/900*2;
     camera.updateProjectionMatrix();    
 }
@@ -323,6 +353,19 @@ function animate() {
 
 }
 
+function animateDots() {
+    if (dots.visible) {
+	var time = Date.now() * 0.005;    
+	var geometry = dots.geometry;
+	var attributes = geometry.attributes;
+	for ( var i = 0; i < attributes.size.array.length; i++ ) {
+	    attributes.size.array[ i ] = dotSize + dotSize/2 * Math.sin( 0.1 * i + time );
+	}
+	attributes.size.needsUpdate = true;
+    }
+
+}
 function render() {
+    animateDots();
     renderer.render( scene, camera );
 }
