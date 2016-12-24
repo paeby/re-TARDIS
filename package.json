@@ -4,8 +4,10 @@
   "description": "",
   "main": "bundle.js",
   "dependencies": {
+    "@types/stats": "^0.16.30",
     "es6-promise": "^4.0.5",
     "stats-js": "^1.0.0-alpha1",
+    "stats.js": "^0.17.0",
     "three": "^0.83.0",
     "three-orbit-controls": "^82.1.0",
     "typescript": "^2.1.4"

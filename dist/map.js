@@ -1,6 +1,6 @@
 "use strict";
 const THREE = require("three");
-var Stats = require("stats-js");
+const Stats = require("stats.js");
 var OrbitControls = require('three-orbit-controls')(THREE);
 var loader = new THREE.FileLoader();
 loader.load('stops.json', function (json) {
@@ -94,7 +94,7 @@ function setRenderer() {
 }
 function setStats() {
     stats = new Stats();
-    container.appendChild(stats.domElement);
+    document.body.appendChild(stats.dom);
 }
 function setTiles() {
     // Color palette for different distances

@@ -1,5 +1,5 @@
 import THREE = require("three");
-var Stats = require("stats-js");
+import Stats = require("stats.js");
 
 var OrbitControls = require('three-orbit-controls')(THREE);
 
@@ -58,7 +58,7 @@ var height_factor = 4.0;
 var dotSize = 6.0;
 
 // ----- THREE VARIABLES -----
-var stats;
+var stats: Stats;
 var camera, controls, scene;
 var raycaster = new THREE.Raycaster();
 var tiles = []
@@ -126,7 +126,7 @@ function setRenderer(){
 
 function setStats(){
     stats = new Stats();
-    container.appendChild( stats.domElement );    
+    document.body.appendChild( stats.dom );    
 }
 
 function setTiles(){
