@@ -82,12 +82,13 @@
 	var dotSize = 6.0;
 	// ----- THREE VARIABLES -----
 	var stats;
-	var camera, controls, scene;
+	var camera;
+	var controls;
+	var scene;
 	var raycaster = new THREE.Raycaster();
 	var tiles = [];
 	var colors = []; // hold the generated colors
 	var min;
-	var light;
 	var lastDown = 0;
 	var dots;
 	var renderer;

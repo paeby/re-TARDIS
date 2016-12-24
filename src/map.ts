@@ -59,14 +59,15 @@ var dotSize = 6.0;
 
 // ----- THREE VARIABLES -----
 var stats: Stats;
-var camera, controls, scene;
+var camera: THREE.OrthographicCamera;
+var controls;
+var scene: THREE.Scene;
 var raycaster = new THREE.Raycaster();
 var tiles = []
 var colors = []; // hold the generated colors
 var min;
-var light;
 var lastDown = 0;
-var dots;
+var dots: THREE.Points;
 var renderer: THREE.WebGLRenderer;
 var container: HTMLElement;
 
@@ -422,7 +423,7 @@ function animate() {
 function animateDots() {
     if (dots.visible) {
 	var time = Date.now() * 0.005;    
-	var geometry = dots.geometry;
+	var geometry:any = dots.geometry;
 	var attributes = geometry.attributes;
 	for ( var i = 0; i < attributes.size.array.length; i++ ) {
 	    attributes.size.array[ i ] = dotSize + dotSize/2 * Math.sin( 0.1 * i + time );
