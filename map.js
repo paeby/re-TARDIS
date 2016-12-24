@@ -77,7 +77,7 @@ function init(){
 }
 
 function setListeners(){
-    document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+    document.addEventListener( 'click', onDocumentClick, false );
     window.addEventListener( 'resize', onWindowResize, false );
 }
 
@@ -98,7 +98,9 @@ function setRenderer(container){
     renderer.gammaInput = true;
     renderer.gammaOutput = true;
     renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;    
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.autoUpdate = false;
+    renderer.shadowMap.needsUpdate = true; 
 }
 
 function setStats(container){
@@ -224,7 +226,7 @@ function generateColorPalette() {
     
 }
 
-function onDocumentMouseDown( e ) {
+function onDocumentClick( e ) {
     event.preventDefault();
     mouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
     mouse.y = - ( event.clientY / renderer.domElement.clientHeight ) * 2 + 1;
@@ -236,7 +238,7 @@ function onDocumentMouseDown( e ) {
 	var name = intersects[0].object.name.substring(1);
 	// When we will have the travel distance between tiles
 	//updateMap(+name);
-	updateMap(8508759);
+	//updateMap(8508759);
     }
 }
 
