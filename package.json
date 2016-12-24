@@ -1,0 +1,26 @@
+{
+  "name": "re-tardis",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bundle.js",
+  "dependencies": {
+    "es6-promise": "^4.0.5",
+    "stats-js": "^1.0.0-alpha1",
+    "three": "^0.83.0",
+    "three-orbit-controls": "^82.1.0",
+    "typescript": "^2.1.4"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paeby/re-TARDIS.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/paeby/re-TARDIS/issues"
+  },
+  "homepage": "https://github.com/paeby/re-TARDIS#readme"
+}

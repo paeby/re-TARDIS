@@ -1,4 +1,10 @@
-var loader = new THREE.FileLoader();
+import THREE = require("three");
+var Stats = require("stats-js");
+
+var OrbitControls = require('three-orbit-controls')(THREE);
+
+var loader:any = new (<any>THREE).FileLoader();
+
 loader.load(
     'stops.json',
     function (json) {
@@ -52,8 +58,8 @@ var height_factor = 4.0;
 var dotSize = 6.0;
 
 // ----- THREE VARIABLES -----
-var Stats;
-var camera, controls, scene, renderer;
+var stats;
+var camera, controls, scene;
 var raycaster = new THREE.Raycaster();
 var tiles = []
 var colors = []; // hold the generated colors
@@ -61,21 +67,31 @@ var min;
 var light;
 var lastDown = 0;
 var dots;
+var renderer: THREE.WebGLRenderer;
+var container: HTMLElement;
 
 function init(){
-
-    var container = document.createElement( 'div' );
-    document.body.appendChild( container );
+    container = document.createElement( 'div' );
+    document.body.appendChild(container);
     scene = new THREE.Scene();
     setListeners();
     setCamera();
     setControls();    
     setLights();
-    setRenderer(container)        
-    setStats(container);
-    setFloor()
-    setTiles();
+    setRenderer();
+    setStats();
+    setFloor();
+    setTiles();    
+    addTexts();
 
+}
+
+function addTexts() {
+ /*   var sprite = new Text2D.SpriteText2D("SPRITE", { align: Text2D.textAlign.center,  font: '40px Arial', fillStyle: '#000000' , antialias: false })
+    
+    sprite.position.set(48, 54, 40);
+    scene.add(sprite);
+    */
 }
 
 function setListeners(){
@@ -92,12 +108,12 @@ function setFloor() {
     scene.add(mshFloor);
     
 }
-function setRenderer(container){
+function setRenderer(){
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setClearColor( 0x323232 );    
     renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize( window.innerWidth, window.innerHeight );
-    container.appendChild( renderer.domElement );
+    container.appendChild(renderer.domElement);
     renderer.gammaInput = true;
     renderer.gammaOutput = true;
     renderer.shadowMap.enabled = true;
@@ -106,9 +122,11 @@ function setRenderer(container){
     renderer.shadowMap.needsUpdate = true; 
 }
 
-function setStats(container){
+
+
+function setStats(){
     stats = new Stats();
-    container.appendChild( stats.dom );    
+    container.appendChild( stats.domElement );    
 }
 
 function setTiles(){
@@ -122,6 +140,9 @@ function setTiles(){
 
 }
 
+interface CBMesh extends  THREE.Mesh {
+   callback: () => any
+}
 function genTiles() {
     var material = new THREE.MeshPhongMaterial( { color: 0x5e7eff, overdraw: 0.5, shading: THREE.FlatShading, shininess:0, specular:0} );    
 
@@ -134,7 +155,7 @@ function genTiles() {
     function createTile(t) {
 	var height = t.h*height_factor + height_base;
 	var geometry = new THREE.CylinderGeometry( diameter, diameter, height, 6 );
-	var tile = new THREE.Mesh( geometry, material);
+    var tile:CBMesh = <CBMesh>new THREE.Mesh( geometry, material) 
 	
 	tile.position.set(t.x, t.y, height/2 + height_fly)
 	tile.rotation.x = Math.PI/2;
@@ -144,9 +165,7 @@ function genTiles() {
 	
 
 	tile.name = "t"+t.ID;	
-	tile.callback = function(){
-	    updateMap(t.ID);
-	};
+
 	
 	tile.castShadow = true;
 	tile.receiveShadow = true;
@@ -185,21 +204,22 @@ function genTiles() {
     
 }
 
+
 function genPoints() {
 
     var amount = stops.length
     var positions = new Float32Array( amount * 3 );
     var sizes = new Float32Array( amount );    
     var colors = new Float32Array( amount * 3 );
-    var vertex = new THREE.Vector3();
+    var vertex:any = new THREE.Vector3();
     for (var stop in stops) {
-	var s = stops[stop];
-	var height = s.h*height_factor+height_base + 0.2 + height_fly;	
-    	vertex.x = s.x
-	vertex.y = s.y
-	vertex.z = height
-	vertex.toArray( positions, stop * 3 );
-	sizes[ stop ] = dotSize;	
+        var s = stops[stop];
+        var height = s.h*height_factor+height_base + 0.2 + height_fly;	
+        vertex.x = s.x
+        vertex.y = s.y
+        vertex.z = height
+        vertex.toArray(positions, <any>stop * 3 );
+        sizes[ stop ] = dotSize;	
     }    
 
     var geometry = new THREE.BufferGeometry();
@@ -270,7 +290,7 @@ function onDocumentDown(event) {
     console.log(camera.zoom, camera.position.z);
     dots.visible = true;
     for (var t in tiles) {
-	tiles[t].visible = false;
+	tiles[t].material.visible = false;
     }
 }
 
@@ -279,7 +299,7 @@ function onDocumentUp(event) {
 	click(event);
     }
     for (var t in tiles) {
-	tiles[t].visible = true;
+	tiles[t].material.visible = true;
     }    
     dots.visible = false;    
 }
@@ -292,7 +312,8 @@ function click(event) {
     raycaster.setFromCamera( mouse, camera );
     var intersects = raycaster.intersectObjects( tiles ); 
     if ( intersects.length > 0 ) {
-	var tile = intersects[0].object;
+	var tile = <CBMesh> intersects[0].object;
+	console.log(tile);
 	tile.callback();
     }
 }
@@ -330,7 +351,7 @@ function setLights(){
 
 function setControls(){
     // Controls (when moving mouse)
-    controls = new THREE.OrbitControls(camera);
+    controls = new OrbitControls(camera);
     controls.enableDamping = true;
     controls.dampingFactor = 0.25;
     controls.enableZoom = true;
@@ -343,6 +364,38 @@ function setControls(){
     controls.rotateSpeed = 0.5;
     controls.zoomSpeed = 1.2;
 }
+
+
+
+function makeTextSprite( message, parameters )
+{
+    if ( parameters === undefined ) parameters = {};
+    var fontface = parameters.hasOwnProperty("fontface") ? parameters["fontface"] : "Arial";
+    var fontsize = parameters.hasOwnProperty("fontsize") ? parameters["fontsize"] : 80;
+    var textColor = parameters.hasOwnProperty("textColor") ?parameters["textColor"] : { r:255, g:255, b:255, a:1.0 };
+
+    var canvas = document.createElement('canvas');
+
+    var context = canvas.getContext('2d');
+    context.font = "Bold " + fontsize + "px " + fontface;
+    var metrics = context.measureText( message );
+    var textWidth = metrics.width;
+    console.log(canvas.width)
+    context.fillStyle = "rgba("+textColor.r+", "+textColor.g+", "+textColor.b+", 1.0)";
+    context.fillText( message, 10, fontsize + 10);
+
+    var texture = new THREE.Texture(canvas) 
+    texture.needsUpdate = true;
+
+    var spriteMaterial = new THREE.SpriteMaterial( { map: texture,
+						     fog: true,
+						     depthWrite: true,
+						     depthTest: false } );
+    var sprite = new THREE.Sprite( spriteMaterial );
+    sprite.scale.set(0.5 * fontsize, 0.25 * fontsize, 0.75 * fontsize);
+    return sprite;  
+}
+
 function onWindowResize(){
     var factor = 2;
     var width = window.innerWidth;
