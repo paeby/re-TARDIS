@@ -8,6 +8,7 @@ var centers = require('../res/centers.json')
 var nodes = require('../res/nodes.json')
 var matrix = require('../res/matrix.json')
 
+var spark1 = require("url?mimetype=image/png!../res/spark1.png");
 var stops, centers, nodes, matrix;
 //----------------------------
 
@@ -35,8 +36,10 @@ init();
 animate();
 
 function init(){
-    container = document.createElement( 'div' );
+    container = document.createElement('div')
     document.body.appendChild(container);
+    var h1 = document.getElementById("loading")
+    h1.parentNode.removeChild(h1);
     scene = new THREE.Scene();
     setListeners();
     setCamera();
@@ -194,7 +197,7 @@ function genPoints() {
     var material = new THREE.ShaderMaterial( {
 	uniforms: {
 	    color:     { value: new THREE.Color( 0x664200 ) },
-	    texture:   { value: new THREE.TextureLoader().load( "spark1.png" ) }
+	    texture:   { value: new THREE.TextureLoader().load(spark1) }
 	},
 	vertexShader:   document.getElementById( 'vertexshader' ).textContent,
 	fragmentShader: document.getElementById( 'fragmentshader' ).textContent,
