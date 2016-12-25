@@ -215,7 +215,7 @@
 	    var i = 360 / (total - 1);
 	    for (var x = 0; x < total; x++) {
 	        var value = +((i * x) / 360);
-	        colors.push(new THREE.Color("hsl(" + 0 + ", 80%, 80%)"));
+	        colors.push(new THREE.Color("hsl(" + value + ", 80%, 80%)"));
 	    }
 	}
 	var hasMoved = false;

@@ -222,8 +222,7 @@ function generateColorPalette() {
     var i = 360 / (total - 1); // distribute the colors evenly on the hue range
     for (var x = 0; x < total; x++) {
         var value = + ((i * x) / 360) 
-        //@TODO replace 0 by value
-        colors.push(new THREE.Color("hsl("+ 0 + ", 80%, 80%)")); // you can also alternate the saturation and value for even more contrast between the colors
+        colors.push(new THREE.Color("hsl("+ value + ", 80%, 80%)")); // you can also alternate the saturation and value for even more contrast between the colors
     }
 
 
