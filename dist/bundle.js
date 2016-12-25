@@ -160,10 +160,15 @@
 	        for (var t_index in tiles) {
 	            var tile = tiles[t_index];
 	            var distance = tile.position.distanceTo(id_to_tile.get(id).position);
-	            var timeout = distance;
+	            var timeout = distance * 5;
 	            var color = new THREE.Color("hsl(" + distance * 2 + ", 80%, 70%)");
 	            var material = tile.material;
-	            material.color.set(color);
+	            function changeColor(material, color, id) {
+	                return () => {
+	                    material.color.set(color);
+	                };
+	            }
+	            new TWEEN.Tween(0).to(100, timeout).onComplete(changeColor(material, color, tile.id)).start();
 	        }
 	    }
 	}

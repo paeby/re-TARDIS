@@ -152,23 +152,17 @@ function genTiles() {
         for (var t_index in tiles) {
             var tile = tiles[t_index];
             var distance = tile.position.distanceTo(id_to_tile.get(id).position)
-            var timeout = distance //the more distance there is, the more timeout (for a wave effect)
+            var timeout = distance*5 //the more distance there is, the more timeout (for a wave effect)
             //console.log(timeout)
             var color = new THREE.Color("hsl("+distance*2+", 80%, 70%)")
             var material = <THREE.MeshPhongMaterial>tile.material;
-            material.color.set(color);
-            /*
-            setTimeout(function () {
-                console.log("TWEEN" + id)
-                //use tween to interpolate the color can't make it work yet
-                /*new TWEEN.Tween(0).to(colors.length - 1, 10).onUpdate(function (nb) {
-                    var c = colors[nb]
-                    material.color.set(new THREE.Color('black'));
-                    console.log(material.color)
-
-                }).start()
-                
-            }, timeout) */
+            function changeColor(material, color, id):() => any {
+                return () => {
+                //Shoud launch another tween to fade the color. But im lazy
+                material.color.set(color);
+                }
+            }
+            new TWEEN.Tween(0).to(100, timeout).onComplete(changeColor(material, color, tile.id)).start()
         }
     }
 
