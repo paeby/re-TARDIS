@@ -148,12 +148,12 @@ function genTiles() {
 
 
     function updateMap(id: number) {
-        console.log("update: " + id)
+        //console.log("update: " + id)
         for (var t_index in tiles) {
             var tile = tiles[t_index];
             var distance = tile.position.distanceTo(id_to_tile.get(id).position)
             var timeout = distance //the more distance there is, the more timeout (for a wave effect)
-            console.log(timeout)
+            //console.log(timeout)
             var color = new THREE.Color("hsl("+distance*2+", 80%, 70%)")
             var material = <THREE.MeshPhongMaterial>tile.material;
             material.color.set(color);
@@ -255,14 +255,14 @@ function onDocumentDown(event) {
 
 function onDocumentUp(event) {
     mouseDown = false
+    if (!hasMoved) {
+        click(event)
+    }
     for (var t in tiles) {
         tiles[t].material.visible = true;
     }
     dots.visible = false;
     hasMoved = false
-    if (!hasMoved) {
-        click(event)
-    }
 }
 
 function click(event) {

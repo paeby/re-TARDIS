@@ -157,12 +157,10 @@
 	        scene.add(tile);
 	    }
 	    function updateMap(id) {
-	        console.log("update: " + id);
 	        for (var t_index in tiles) {
 	            var tile = tiles[t_index];
 	            var distance = tile.position.distanceTo(id_to_tile.get(id).position);
 	            var timeout = distance;
-	            console.log(timeout);
 	            var color = new THREE.Color("hsl(" + distance * 2 + ", 80%, 70%)");
 	            var material = tile.material;
 	            material.color.set(color);
@@ -232,14 +230,14 @@
 	}
 	function onDocumentUp(event) {
 	    mouseDown = false;
+	    if (!hasMoved) {
+	        click(event);
+	    }
 	    for (var t in tiles) {
 	        tiles[t].material.visible = true;
 	    }
 	    dots.visible = false;
 	    hasMoved = false;
-	    if (!hasMoved) {
-	        click(event);
-	    }
 	}
 	function click(event) {
 	    event.preventDefault();
