@@ -1,53 +1,12 @@
 import THREE = require("three");
 import Stats = require("stats.js");
 import { SpriteText2D, textAlign } from 'three-text2d'
-
 var OrbitControls = require('three-orbit-controls')(THREE);
 
-var loader:any = new (<any>THREE).FileLoader();
-
-loader.load(
-    'stops.json',
-    function (json) {
-	stops = JSON.parse(json);
-	start()
-    }
-);
-
-loader.load(
-    'centers.json',
-    function (json) {
-	centers = JSON.parse(json);
-	start()
-    }
-);
-
-loader.load(
-    'nodes.json',
-    function (json) {
-	nodes = JSON.parse(json);
-	start()
-    }
-);
-
-loader.load(
-    'matrix.json',
-    function (json) {
-	matrix = JSON.parse(json);
-	start()
-    }
-);
-
-var to_load = 4;
-
-function start(){
-    to_load -= 1;
-    if (to_load == 0) {
-	init();
-	animate();
-    }
-}
-
+var  stops = require('../res/stops.json')
+var centers = require('../res/centers.json')
+var nodes = require('../res/nodes.json')
+var matrix = require('../res/matrix.json')
 
 var stops, centers, nodes, matrix;
 //----------------------------
@@ -71,6 +30,9 @@ var lastDown = 0;
 var dots: THREE.Points;
 var renderer: THREE.WebGLRenderer;
 var container: HTMLElement;
+
+init();
+animate();
 
 function init(){
     container = document.createElement( 'div' );

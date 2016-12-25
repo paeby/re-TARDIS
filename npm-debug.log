@@ -3,62 +3,62 @@
 1 verbose cli   '/usr/bin/npm',
 1 verbose cli   'install',
 1 verbose cli   '--save',
-1 verbose cli   '@types/three-text2d' ]
+1 verbose cli   '@types/json-loader' ]
 2 info using npm@4.0.3
 3 info using node@v7.2.1
 4 silly loadCurrentTree Starting
 5 silly install loadCurrentTree
 6 silly install readLocalPackageData
-7 silly fetchPackageMetaData @types/three-text2d
-8 silly fetchNamedPackageData @types/three-text2d
-9 silly mapToRegistry name @types/three-text2d
+7 silly fetchPackageMetaData @types/json-loader
+8 silly fetchNamedPackageData @types/json-loader
+9 silly mapToRegistry name @types/json-loader
 10 silly mapToRegistry scope (from package name) @types
 11 verbose mapToRegistry no registry URL found in name for scope @types
 12 silly mapToRegistry using default registry
 13 silly mapToRegistry registry https://registry.npmjs.org/
 14 silly mapToRegistry data Result {
-14 silly mapToRegistry   raw: '@types/three-text2d',
+14 silly mapToRegistry   raw: '@types/json-loader',
 14 silly mapToRegistry   scope: '@types',
-14 silly mapToRegistry   escapedName: '@types%2fthree-text2d',
-14 silly mapToRegistry   name: '@types/three-text2d',
+14 silly mapToRegistry   escapedName: '@types%2fjson-loader',
+14 silly mapToRegistry   name: '@types/json-loader',
 14 silly mapToRegistry   rawSpec: '',
 14 silly mapToRegistry   spec: 'latest',
 14 silly mapToRegistry   type: 'tag' }
-15 silly mapToRegistry uri https://registry.npmjs.org/@types%2fthree-text2d
-16 verbose request uri https://registry.npmjs.org/@types%2fthree-text2d
+15 silly mapToRegistry uri https://registry.npmjs.org/@types%2fjson-loader
+16 verbose request uri https://registry.npmjs.org/@types%2fjson-loader
 17 verbose request no auth needed
-18 info attempt registry request try #1 at 1:19:41 AM
-19 verbose request id 3c8e0dca8294d8a1
-20 http request GET https://registry.npmjs.org/@types%2fthree-text2d
-21 http 404 https://registry.npmjs.org/@types%2fthree-text2d
+18 info attempt registry request try #1 at 1:17:10 PM
+19 verbose request id 4389edd4bccf02ad
+20 http request GET https://registry.npmjs.org/@types%2fjson-loader
+21 http 404 https://registry.npmjs.org/@types%2fjson-loader
 22 verbose headers { 'content-type': 'application/json',
 22 verbose headers   'cache-control': 'max-age=0',
 22 verbose headers   'content-length': '2',
 22 verbose headers   'accept-ranges': 'bytes',
-22 verbose headers   date: 'Sun, 25 Dec 2016 00:19:55 GMT',
+22 verbose headers   date: 'Sun, 25 Dec 2016 12:17:19 GMT',
 22 verbose headers   via: '1.1 varnish',
 22 verbose headers   age: '0',
 22 verbose headers   connection: 'keep-alive',
-22 verbose headers   'x-served-by': 'cache-fra1236-FRA',
+22 verbose headers   'x-served-by': 'cache-fra1221-FRA',
 22 verbose headers   'x-cache': 'MISS',
 22 verbose headers   'x-cache-hits': '0',
-22 verbose headers   'x-timer': 'S1482625195.614953,VS0,VE342',
+22 verbose headers   'x-timer': 'S1482668239.432778,VS0,VE333',
 22 verbose headers   vary: 'Accept-Encoding' }
 23 silly get cb [ 404,
 23 silly get   { 'content-type': 'application/json',
 23 silly get     'cache-control': 'max-age=0',
 23 silly get     'content-length': '2',
 23 silly get     'accept-ranges': 'bytes',
-23 silly get     date: 'Sun, 25 Dec 2016 00:19:55 GMT',
+23 silly get     date: 'Sun, 25 Dec 2016 12:17:19 GMT',
 23 silly get     via: '1.1 varnish',
 23 silly get     age: '0',
 23 silly get     connection: 'keep-alive',
-23 silly get     'x-served-by': 'cache-fra1236-FRA',
+23 silly get     'x-served-by': 'cache-fra1221-FRA',
 23 silly get     'x-cache': 'MISS',
 23 silly get     'x-cache-hits': '0',
-23 silly get     'x-timer': 'S1482625195.614953,VS0,VE342',
+23 silly get     'x-timer': 'S1482668239.432778,VS0,VE333',
 23 silly get     vary: 'Accept-Encoding' } ]
-24 silly fetchPackageMetaData Error: Registry returned 404 for GET on https://registry.npmjs.org/@types%2fthree-text2d
+24 silly fetchPackageMetaData Error: Registry returned 404 for GET on https://registry.npmjs.org/@types%2fjson-loader
 24 silly fetchPackageMetaData     at makeError (/usr/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:302:12)
 24 silly fetchPackageMetaData     at CachingRegistryClient.<anonymous> (/usr/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:280:14)
 24 silly fetchPackageMetaData     at Request._callback (/usr/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:210:14)
@@ -69,7 +69,7 @@
 24 silly fetchPackageMetaData     at emitOne (events.js:96:13)
 24 silly fetchPackageMetaData     at Request.emit (events.js:188:7)
 24 silly fetchPackageMetaData     at IncomingMessage.<anonymous> (/usr/lib/node_modules/npm/node_modules/request/request.js:1001:12)
-24 silly fetchPackageMetaData  error for @types/three-text2d { Error: Registry returned 404 for GET on https://registry.npmjs.org/@types%2fthree-text2d
+24 silly fetchPackageMetaData  error for @types/json-loader { Error: Registry returned 404 for GET on https://registry.npmjs.org/@types%2fjson-loader
 24 silly fetchPackageMetaData     at makeError (/usr/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:302:12)
 24 silly fetchPackageMetaData     at CachingRegistryClient.<anonymous> (/usr/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:280:14)
 24 silly fetchPackageMetaData     at Request._callback (/usr/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:210:14)
@@ -79,12 +79,12 @@
 24 silly fetchPackageMetaData     at Request.<anonymous> (/usr/lib/node_modules/npm/node_modules/request/request.js:1081:10)
 24 silly fetchPackageMetaData     at emitOne (events.js:96:13)
 24 silly fetchPackageMetaData     at Request.emit (events.js:188:7)
-24 silly fetchPackageMetaData     at IncomingMessage.<anonymous> (/usr/lib/node_modules/npm/node_modules/request/request.js:1001:12) pkgid: '@types/three-text2d', statusCode: 404, code: 'E404' }
+24 silly fetchPackageMetaData     at IncomingMessage.<anonymous> (/usr/lib/node_modules/npm/node_modules/request/request.js:1001:12) pkgid: '@types/json-loader', statusCode: 404, code: 'E404' }
 25 silly rollbackFailedOptional Starting
 26 silly rollbackFailedOptional Finishing
 27 silly runTopLevelLifecycles Finishing
 28 silly install printInstalled
-29 verbose stack Error: Registry returned 404 for GET on https://registry.npmjs.org/@types%2fthree-text2d
+29 verbose stack Error: Registry returned 404 for GET on https://registry.npmjs.org/@types%2fjson-loader
 29 verbose stack     at makeError (/usr/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:302:12)
 29 verbose stack     at CachingRegistryClient.<anonymous> (/usr/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:280:14)
 29 verbose stack     at Request._callback (/usr/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:210:14)
@@ -96,16 +96,16 @@
 29 verbose stack     at Request.emit (events.js:188:7)
 29 verbose stack     at IncomingMessage.<anonymous> (/usr/lib/node_modules/npm/node_modules/request/request.js:1001:12)
 30 verbose statusCode 404
-31 verbose pkgid @types/three-text2d
+31 verbose pkgid @types/json-loader
 32 verbose cwd /home/atoll/re-TARDIS
 33 error Linux 4.8.13-1-ARCH
-34 error argv "/usr/bin/node" "/usr/bin/npm" "install" "--save" "@types/three-text2d"
+34 error argv "/usr/bin/node" "/usr/bin/npm" "install" "--save" "@types/json-loader"
 35 error node v7.2.1
 36 error npm  v4.0.3
 37 error code E404
-38 error 404 Registry returned 404 for GET on https://registry.npmjs.org/@types%2fthree-text2d
+38 error 404 Registry returned 404 for GET on https://registry.npmjs.org/@types%2fjson-loader
 39 error 404
-40 error 404 '@types/three-text2d' is not in the npm registry.
+40 error 404 '@types/json-loader' is not in the npm registry.
 41 error 404 You should bug the author to publish it (or use the name yourself!)
 42 error 404 Note that you can also install from a
 43 error 404 tarball, folder, http url, or git url.

@@ -3,31 +3,10 @@ const THREE = require("three");
 const Stats = require("stats.js");
 const three_text2d_1 = require("three-text2d");
 var OrbitControls = require('three-orbit-controls')(THREE);
-var loader = new THREE.FileLoader();
-loader.load('stops.json', function (json) {
-    stops = JSON.parse(json);
-    start();
-});
-loader.load('centers.json', function (json) {
-    centers = JSON.parse(json);
-    start();
-});
-loader.load('nodes.json', function (json) {
-    nodes = JSON.parse(json);
-    start();
-});
-loader.load('matrix.json', function (json) {
-    matrix = JSON.parse(json);
-    start();
-});
-var to_load = 4;
-function start() {
-    to_load -= 1;
-    if (to_load == 0) {
-        init();
-        animate();
-    }
-}
+var stops = require('../res/stops.json');
+var centers = require('../res/centers.json');
+var nodes = require('../res/nodes.json');
+var matrix = require('../res/matrix.json');
 var stops, centers, nodes, matrix;
 var diameter = 3.2;
 var height_fly = 30;
@@ -46,6 +25,8 @@ var lastDown = 0;
 var dots;
 var renderer;
 var container;
+init();
+animate();
 function init() {
     container = document.createElement('div');
     document.body.appendChild(container);

@@ -6,6 +6,7 @@
   "dependencies": {
     "@types/stats": "^0.16.30",
     "es6-promise": "^4.0.5",
+    "json-loader": "^0.5.4",
     "stats-js": "^1.0.0-alpha1",
     "stats.js": "^0.17.0",
     "three": "^0.83.0",
