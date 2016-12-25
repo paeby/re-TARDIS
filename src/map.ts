@@ -1,5 +1,6 @@
 import THREE = require("three");
 import Stats = require("stats.js");
+import { SpriteText2D, textAlign } from 'three-text2d'
 
 var OrbitControls = require('three-orbit-controls')(THREE);
 
@@ -88,11 +89,12 @@ function init(){
 }
 
 function addTexts() {
- /*   var sprite = new Text2D.SpriteText2D("SPRITE", { align: Text2D.textAlign.center,  font: '40px Arial', fillStyle: '#000000' , antialias: false })
-    
+    var sprite = new SpriteText2D("Merry Christmas les enfants", { align: textAlign.center,  font: '50px Arial', fillStyle: '#FFFFFF' , antialias: true  })
+    sprite.material.depthTest = false;
     sprite.position.set(48, 54, 40);
+    sprite.scale.set(0.2, 0.2, 0.2)
     scene.add(sprite);
-    */
+    
 }
 
 function setListeners(){

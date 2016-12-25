@@ -10,6 +10,7 @@
     "stats.js": "^0.17.0",
     "three": "^0.83.0",
     "three-orbit-controls": "^82.1.0",
+    "three-text2d": "^0.3.0",
     "typescript": "^2.1.4"
   },
   "scripts": {

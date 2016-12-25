@@ -1,6 +1,7 @@
 "use strict";
 const THREE = require("three");
 const Stats = require("stats.js");
+const three_text2d_1 = require("three-text2d");
 var OrbitControls = require('three-orbit-controls')(THREE);
 var loader = new THREE.FileLoader();
 loader.load('stops.json', function (json) {
@@ -60,6 +61,11 @@ function init() {
     addTexts();
 }
 function addTexts() {
+    var sprite = new three_text2d_1.SpriteText2D("Merry Christmas les enfants", { align: three_text2d_1.textAlign.center, font: '50px Arial', fillStyle: '#FFFFFF', antialias: true });
+    sprite.material.depthTest = false;
+    sprite.position.set(48, 54, 40);
+    sprite.scale.set(0.2, 0.2, 0.2);
+    scene.add(sprite);
 }
 function setListeners() {
     document.addEventListener('mousedown', onDocumentDown, false);
