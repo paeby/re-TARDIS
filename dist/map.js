@@ -2,13 +2,13 @@
 const THREE = require("three");
 const Stats = require("stats.js");
 const three_text2d_1 = require("three-text2d");
+const TWEEN = require("tween.js");
 var OrbitControls = require('three-orbit-controls')(THREE);
 var stops = require('../res/stops.json');
 var centers = require('../res/centers.json');
 var nodes = require('../res/nodes.json');
 var matrix = require('../res/matrix.json');
 var spark1 = require("url?mimetype=image/png!../res/spark1.png");
-var stops, centers, nodes, matrix;
 var diameter = 3.2;
 var height_fly = 30;
 var height_base = 5.0;
@@ -19,10 +19,10 @@ var camera;
 var controls;
 var scene;
 var raycaster = new THREE.Raycaster();
+var id_to_tile = new Map();
 var tiles = [];
 var colors = [];
 var min;
-var lastDown = 0;
 var dots;
 var renderer;
 var container;
@@ -54,6 +54,7 @@ function addTexts() {
 function setListeners() {
     document.addEventListener('mousedown', onDocumentDown, false);
     document.addEventListener('mouseup', onDocumentUp, false);
+    document.addEventListener('mousemove', onDocumentMove, false);
     window.addEventListener('resize', onWindowResize, false);
 }
 function setFloor() {
@@ -93,26 +94,33 @@ function genTiles() {
     function createTile(t) {
         var height = t.h * height_factor + height_base;
         var geometry = new THREE.CylinderGeometry(diameter, diameter, height, 6);
-        var tile = new THREE.Mesh(geometry, material);
+        var tile = new THREE.Mesh(geometry, material.clone());
         tile.position.set(t.x, t.y, height / 2 + height_fly);
         tile.rotation.x = Math.PI / 2;
         tile.rotation.y = Math.PI / 2;
         tile.updateMatrix();
         tile.matrixAutoUpdate = false;
         tile.name = "t" + t.ID;
+        tile.callback = function () {
+            updateMap(t.ID);
+        };
         tile.castShadow = true;
         tile.receiveShadow = true;
         tiles.push(tile);
+        id_to_tile.set(t.ID, tile);
         scene.add(tile);
     }
     function updateMap(id) {
         console.log("update: " + id);
-    }
-    function updateColor(id, color) {
-        scene.traverse(function (object) {
-            if (object.name === id) {
-            }
-        });
+        for (var t_index in tiles) {
+            var tile = tiles[t_index];
+            var distance = tile.position.distanceTo(id_to_tile.get(id).position);
+            var timeout = distance;
+            console.log(timeout);
+            var color = new THREE.Color("hsl(" + distance * 2 + ", 80%, 70%)");
+            var material = tile.material;
+            material.color.set(color);
+        }
     }
 }
 function genPoints() {
@@ -157,54 +165,35 @@ function generateColorPalette() {
     var total = max - min;
     var i = 360 / (total - 1);
     for (var x = 0; x < total; x++) {
-        colors.push(HSVtoRGB((i * x) / 360, 0.8, 0.8));
+        var value = +((i * x) / 360);
+        colors.push(new THREE.Color("hsl(" + 0 + ", 80%, 80%)"));
     }
-    function HSVtoRGB(h, s, v) {
-        var r, g, b;
-        var i = Math.floor(h * 6);
-        var f = h * 6 - i;
-        var p = v * (1 - s);
-        var q = v * (1 - f * s);
-        var t = v * (1 - (1 - f) * s);
-        switch (i % 6) {
-            case 0:
-                r = v, g = t, b = p;
-                break;
-            case 1:
-                r = q, g = v, b = p;
-                break;
-            case 2:
-                r = p, g = v, b = t;
-                break;
-            case 3:
-                r = p, g = q, b = v;
-                break;
-            case 4:
-                r = t, g = p, b = v;
-                break;
-            case 5:
-                r = v, g = p, b = q;
-                break;
+}
+var hasMoved = false;
+var mouseDown = false;
+function onDocumentMove(event) {
+    if (!hasMoved && mouseDown) {
+        hasMoved = true;
+        dots.visible = true;
+        for (var t in tiles) {
+            tiles[t].material.visible = false;
         }
-        return { r: r, g: g, b: b };
     }
 }
 function onDocumentDown(event) {
-    lastDown = event.timeStamp;
+    mouseDown = true;
     console.log(camera.zoom, camera.position.z);
-    dots.visible = true;
-    for (var t in tiles) {
-        tiles[t].material.visible = false;
-    }
 }
 function onDocumentUp(event) {
-    if (event.timeStamp - lastDown <= 200) {
-        click(event);
-    }
+    mouseDown = false;
     for (var t in tiles) {
         tiles[t].material.visible = true;
     }
     dots.visible = false;
+    hasMoved = false;
+    if (!hasMoved) {
+        click(event);
+    }
 }
 function click(event) {
     event.preventDefault();
@@ -275,10 +264,12 @@ function makeTextSprite(message, parameters) {
     context.fillText(message, 10, fontsize + 10);
     var texture = new THREE.Texture(canvas);
     texture.needsUpdate = true;
-    var spriteMaterial = new THREE.SpriteMaterial({ map: texture,
+    var spriteMaterial = new THREE.SpriteMaterial({
+        map: texture,
         fog: true,
         depthWrite: true,
-        depthTest: false });
+        depthTest: false
+    });
     var sprite = new THREE.Sprite(spriteMaterial);
     sprite.scale.set(0.5 * fontsize, 0.25 * fontsize, 0.75 * fontsize);
     return sprite;
@@ -297,6 +288,7 @@ function onWindowResize() {
 }
 function animate() {
     requestAnimationFrame(animate);
+    TWEEN.update();
     stats.update();
     render();
 }
