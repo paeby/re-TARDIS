@@ -24,5 +24,8 @@
   "bugs": {
     "url": "https://github.com/paeby/re-TARDIS/issues"
   },
-  "homepage": "https://github.com/paeby/re-TARDIS#readme"
+  "homepage": "https://github.com/paeby/re-TARDIS#readme",
+  "devDependencies": {
+    "awesome-typescript-loader": "^3.0.0-beta.17"
+  }
 }

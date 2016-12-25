@@ -28,20 +28,18 @@ function start() {
     }
 }
 var stops, centers, nodes, matrix;
-//----------------------------
 var diameter = 3.2;
 var height_fly = 30;
 var height_base = 5.0;
 var height_factor = 4.0;
 var dotSize = 6.0;
-// ----- THREE VARIABLES -----
 var stats;
 var camera;
 var controls;
 var scene;
 var raycaster = new THREE.Raycaster();
 var tiles = [];
-var colors = []; // hold the generated colors
+var colors = [];
 var min;
 var lastDown = 0;
 var dots;
@@ -62,11 +60,6 @@ function init() {
     addTexts();
 }
 function addTexts() {
-    /*   var sprite = new Text2D.SpriteText2D("SPRITE", { align: Text2D.textAlign.center,  font: '40px Arial', fillStyle: '#000000' , antialias: false })
-       
-       sprite.position.set(48, 54, 40);
-       scene.add(sprite);
-       */
 }
 function setListeners() {
     document.addEventListener('mousedown', onDocumentDown, false);
@@ -98,9 +91,7 @@ function setStats() {
     document.body.appendChild(stats.dom);
 }
 function setTiles() {
-    // Color palette for different distances
     generateColorPalette();
-    // Create points from stops
     genPoints();
     genTiles();
 }
@@ -126,18 +117,6 @@ function genTiles() {
     }
     function updateMap(id) {
         console.log("update: " + id);
-        /*	var index = nodes.indexOf(id);
-            if (typeof index !== 'undefined' && index!== -1) {
-            for(var station in nodes){
-            // ----- THIS IS JUST BECAUSE WE HAVE A MATRIX WITH STOP ID, then it will be easy with tile ids
-            var s_id = nodes[station];
-            var t_id = ($.grep(stops, function(e){ return e.stop_id == s_id; }))[0].ID;
-            console.log(t_id)
-            var time = matrix[index][station];
-            updateColor('t'+t_id, colors[time-min]);
-            }
-            }
-        */
     }
     function updateColor(id, color) {
         scene.traverse(function (object) {
@@ -175,7 +154,6 @@ function genPoints() {
         depthTest: false,
         transparent: true
     });
-    //    var material = new THREE.PointsMaterial( { size: 2, sizeAttenuation: false, color: 0x664200 } );
     dots = new THREE.Points(geometry, material);
     scene.add(dots);
     dots.visible = false;
@@ -187,9 +165,9 @@ function generateColorPalette() {
     var max = Math.max.apply(null, arr);
     min = Math.min.apply(null, arr);
     var total = max - min;
-    var i = 360 / (total - 1); // distribute the colors evenly on the hue range
+    var i = 360 / (total - 1);
     for (var x = 0; x < total; x++) {
-        colors.push(HSVtoRGB((i * x) / 360, 0.8, 0.8)); // you can also alternate the saturation and value for even more contrast between the colors
+        colors.push(HSVtoRGB((i * x) / 360, 0.8, 0.8));
     }
     function HSVtoRGB(h, s, v) {
         var r, g, b;
@@ -221,7 +199,6 @@ function generateColorPalette() {
         return { r: r, g: g, b: b };
     }
 }
-//to implement click timeout
 function onDocumentDown(event) {
     lastDown = event.timeStamp;
     console.log(camera.zoom, camera.position.z);
@@ -278,7 +255,6 @@ function setLights() {
     scene.add(ambient);
 }
 function setControls() {
-    // Controls (when moving mouse)
     controls = new OrbitControls(camera);
     controls.enableDamping = true;
     controls.dampingFactor = 0.25;
@@ -331,7 +307,6 @@ function onWindowResize() {
 }
 function animate() {
     requestAnimationFrame(animate);
-    //    controls.update();
     stats.update();
     render();
 }

@@ -5,7 +5,9 @@
         "sourceMap": true,
         "noImplicitAny": false,
         "module": "commonjs",
-        "target": "es6"
+        "target": "es6",
+        "removeComments": true,
+        "watch": true
     },
     "exclude": [
     "node_modules",
