@@ -1,10 +1,12 @@
 "use strict";
 const THREE = require("three");
+const DATA = require("dat-gui");
 const Stats = require("stats.js");
 const three_text2d_1 = require("three-text2d");
 const TWEEN = require("tween.js");
 var OrbitControls = require('three-orbit-controls')(THREE);
 var stops = require('../res/stops.json');
+var cities = require('../res/cities.json');
 var centers = require('../res/centers.json');
 var nodes = require('../res/nodes.json');
 var matrix = require('../res/matrix.json');
@@ -26,6 +28,12 @@ var min;
 var dots;
 var renderer;
 var container;
+var cityParameters = {
+    cityName: 'Sion',
+    tile_id: 377
+};
+var displayedCities = [];
+var gui;
 init();
 animate();
 function init() {
@@ -35,21 +43,47 @@ function init() {
     h1.parentNode.removeChild(h1);
     scene = new THREE.Scene();
     setListeners();
+    setRenderer();
     setCamera();
     setControls();
     setLights();
-    setRenderer();
     setStats();
     setFloor();
     setTiles();
     addTexts();
+    customCity();
 }
-function addTexts() {
-    var sprite = new three_text2d_1.SpriteText2D("Merry Christmas les enfants", { align: three_text2d_1.textAlign.center, font: '50px Arial', fillStyle: '#FFFFFF', antialias: true });
+function customCity() {
+    gui = new DATA.GUI();
+    var city = gui.add(cityParameters, 'cityName').listen();
+    city.onChange(function (value) {
+        addCity(value, cityParameters.tile_id);
+    });
+    gui.open();
+}
+function addCity(name, tile_id) {
+    var sprite = new three_text2d_1.SpriteText2D(name, { align: three_text2d_1.textAlign.center, font: '25px Arial', fillStyle: '#FFFFFF', antialias: true });
     sprite.material.depthTest = false;
-    sprite.position.set(48, 54, 40);
+    var tile_pos = id_to_tile.get(tile_id).position;
+    sprite.position.set(tile_pos.x, tile_pos.y - 3, 40);
     sprite.scale.set(0.2, 0.2, 0.2);
     scene.add(sprite);
+    var geometry = new THREE.CylinderGeometry(diameter, diameter, 0.01, 6);
+    geometry.computeLineDistances();
+    var material = new THREE.LineDashedMaterial({ color: 0xFFFFFF, dashSize: 0.5, gapSize: 0.7, linewidth: 2 });
+    var line = new THREE.Line(geometry, material);
+    line.position.set(tile_pos.x, tile_pos.y, 2 * tile_pos.z - height_fly + 0.01);
+    line.rotation.x = Math.PI / 2;
+    line.rotation.y = Math.PI / 2;
+    scene.add(line);
+}
+function addTexts() {
+    for (var city in cities) {
+        var c = cities[city];
+        if (c.population > 50000) {
+            addCity(c.name, c.ID);
+        }
+    }
 }
 function setListeners() {
     document.addEventListener('mousedown', onDocumentDown, false);
@@ -199,7 +233,6 @@ function onDocumentUp(event) {
     hasMoved = false;
 }
 function click(event) {
-    event.preventDefault();
     var mouse = new THREE.Vector2();
     mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
     mouse.y = -(event.clientY / renderer.domElement.clientHeight) * 2 + 1;
@@ -237,7 +270,7 @@ function setLights() {
     scene.add(ambient);
 }
 function setControls() {
-    controls = new OrbitControls(camera);
+    controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.25;
     controls.enableZoom = true;
