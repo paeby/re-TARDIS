@@ -7,6 +7,7 @@ const TWEEN = require("tween.js");
 var OrbitControls = require('three-orbit-controls')(THREE);
 var stops = require('../res/stops.json');
 var cities = require('../res/cities.json');
+console.log(cities);
 var centers = require('../res/centers.json');
 var nodes = require('../res/nodes.json');
 var matrix = require('../res/matrix.json');
@@ -32,7 +33,7 @@ var cityParameters = {
     cityName: 'Sion',
     tile_id: 377
 };
-var displayedCities = [];
+var displayedCities = {};
 var gui;
 init();
 animate();
@@ -57,7 +58,9 @@ function customCity() {
     gui = new DATA.GUI();
     var city = gui.add(cityParameters, 'cityName').listen();
     city.onChange(function (value) {
-        addCity(value, cityParameters.tile_id);
+        if ((value in cities) & !(value in displayedCities)) {
+            addCity(value, +cities[value].ID);
+        }
     });
     gui.open();
 }
@@ -65,23 +68,29 @@ function addCity(name, tile_id) {
     var sprite = new three_text2d_1.SpriteText2D(name, { align: three_text2d_1.textAlign.center, font: '25px Arial', fillStyle: '#FFFFFF', antialias: true });
     sprite.material.depthTest = false;
     var tile_pos = id_to_tile.get(tile_id).position;
-    sprite.position.set(tile_pos.x, tile_pos.y - 3, 40);
+    sprite.position.set(tile_pos.x, tile_pos.y - 10, 100);
     sprite.scale.set(0.2, 0.2, 0.2);
     scene.add(sprite);
     var geometry = new THREE.CylinderGeometry(diameter, diameter, 0.01, 6);
     geometry.computeLineDistances();
     var material = new THREE.LineDashedMaterial({ color: 0xFFFFFF, dashSize: 0.5, gapSize: 0.7, linewidth: 2 });
     var line = new THREE.Line(geometry, material);
-    line.position.set(tile_pos.x, tile_pos.y, 2 * tile_pos.z - height_fly + 0.01);
+    var z = 2 * tile_pos.z - height_fly + 0.01;
+    line.position.set(tile_pos.x, tile_pos.y, z);
     line.rotation.x = Math.PI / 2;
     line.rotation.y = Math.PI / 2;
     scene.add(line);
+    var geoLine = new THREE.Geometry();
+    geoLine.vertices.push(new THREE.Vector3(tile_pos.x, tile_pos.y, z));
+    geoLine.vertices.push(new THREE.Vector3(tile_pos.x, tile_pos.y - 10, 100));
+    var link = new THREE.Line(geoLine, new THREE.LineBasicMaterial({}));
+    scene.add(link);
 }
 function addTexts() {
     for (var city in cities) {
         var c = cities[city];
-        if (c.population > 50000) {
-            addCity(c.name, c.ID);
+        if (+c.population > 50000) {
+            addCity(city, +c.ID);
         }
     }
 }
