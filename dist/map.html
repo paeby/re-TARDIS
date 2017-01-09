@@ -23,8 +23,9 @@
 			position: absolute;
 			top: 20px;
 			left: 20px;
+			font-size: 30px;
+			cursor: pointer;
 		}
-
 	</style>
 	<link rel="stylesheet" href="load.css">
 	<link rel="stylesheet" href="nav.css">
@@ -48,14 +49,14 @@
 	</script>
 	<div id="mySidenav" class="sidenav">
 		<a href="#" id="closenav" class="closebtn">&times;</a>
-		<input type="text"></input>
+		<input placeholder="type a city here" type="text"></input>
 		<ul>
 			<li>Coffee</li>
 			<li>Tea</li>
 			<li>Milk</li>
 		</ul>
 	</div>
-	<div id="opennav" style="font-size:30px;cursor:pointer;visibility:hidden" onclick="openNav()">&#9776; open da menu principessa</div>
+	<button class="button" id="opennav" style="visibility: hidden;">&#9776; open da menu principessa</button>
 	<script src="bundle.js"></script>
 </body>
 
