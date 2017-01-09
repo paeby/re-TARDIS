@@ -45,6 +45,7 @@ var gui;
 init();
 animate();
 
+document.getElementById("opennav").style.visibility = "";
 document.getElementById("opennav").onclick = function() { openNav()}
 document.getElementById("closenav").onclick = function() { closeNav()}
 
