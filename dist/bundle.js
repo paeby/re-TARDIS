@@ -44,19 +44,27 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
+	__webpack_require__(1);
+	(function webpackMissingModule() { throw new Error("Cannot find module \"clean\""); }());
+
+
+/***/ },
+/* 1 */
+/***/ function(module, exports, __webpack_require__) {
+
 	"use strict";
-	const THREE = __webpack_require__(1);
-	const Stats = __webpack_require__(2);
-	const three_text2d_1 = __webpack_require__(3);
-	const TWEEN = __webpack_require__(9);
-	var OrbitControls = __webpack_require__(11)(THREE);
-	var stops = __webpack_require__(12);
-	var cities = __webpack_require__(13);
+	const THREE = __webpack_require__(2);
+	const Stats = __webpack_require__(3);
+	const three_text2d_1 = __webpack_require__(4);
+	const TWEEN = __webpack_require__(10);
+	var OrbitControls = __webpack_require__(12)(THREE);
+	var stops = __webpack_require__(13);
+	var cities = __webpack_require__(14);
 	console.log(cities);
-	var centers = __webpack_require__(14);
-	var nodes = __webpack_require__(15);
-	var matrix = __webpack_require__(16);
-	var spark1 = __webpack_require__(17);
+	var centers = __webpack_require__(15);
+	var nodes = __webpack_require__(16);
+	var matrix = __webpack_require__(17);
+	var spark1 = __webpack_require__(18);
 	var diameter = 3.2;
 	var height_fly = 30;
 	var height_base = 5.0;
@@ -375,7 +383,7 @@
 	//# sourceMappingURL=map.js.map
 
 /***/ },
-/* 1 */
+/* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
 	(function (global, factory) {
@@ -43725,7 +43733,7 @@
 
 
 /***/ },
-/* 2 */
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// stats.js - http://github.com/mrdoob/stats.js
@@ -43736,20 +43744,20 @@
 
 
 /***/ },
-/* 3 */
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var SpriteText2D_1 = __webpack_require__(4);
+	var SpriteText2D_1 = __webpack_require__(5);
 	exports.SpriteText2D = SpriteText2D_1.SpriteText2D;
-	var MeshText2D_1 = __webpack_require__(8);
+	var MeshText2D_1 = __webpack_require__(9);
 	exports.MeshText2D = MeshText2D_1.MeshText2D;
-	var utils_1 = __webpack_require__(6);
+	var utils_1 = __webpack_require__(7);
 	exports.textAlign = utils_1.textAlign;
 
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -43758,8 +43766,8 @@
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var THREE = __webpack_require__(1);
-	var Text2D_1 = __webpack_require__(5);
+	var THREE = __webpack_require__(2);
+	var Text2D_1 = __webpack_require__(6);
 	var SpriteText2D = (function (_super) {
 	    __extends(SpriteText2D, _super);
 	    function SpriteText2D() {
@@ -43799,7 +43807,7 @@
 
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -43808,9 +43816,9 @@
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var THREE = __webpack_require__(1);
-	var utils_1 = __webpack_require__(6);
-	var CanvasText_1 = __webpack_require__(7);
+	var THREE = __webpack_require__(2);
+	var utils_1 = __webpack_require__(7);
+	var CanvasText_1 = __webpack_require__(8);
 	var Text2D = (function (_super) {
 	    __extends(Text2D, _super);
 	    function Text2D(text, options) {
@@ -43888,11 +43896,11 @@
 
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var three_1 = __webpack_require__(1);
+	var three_1 = __webpack_require__(2);
 	exports.textAlign = {
 	    center: new three_1.Vector2(0, 0),
 	    left: new three_1.Vector2(1, 0),
@@ -43922,12 +43930,12 @@
 
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var THREE = __webpack_require__(1);
-	var utils_1 = __webpack_require__(6);
+	var THREE = __webpack_require__(2);
+	var utils_1 = __webpack_require__(7);
 	var CanvasText = (function () {
 	    function CanvasText() {
 	        this.textWidth = null;
@@ -43965,7 +43973,7 @@
 
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -43974,8 +43982,8 @@
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var THREE = __webpack_require__(1);
-	var Text2D_1 = __webpack_require__(5);
+	var THREE = __webpack_require__(2);
+	var Text2D_1 = __webpack_require__(6);
 	var MeshText2D = (function (_super) {
 	    __extends(MeshText2D, _super);
 	    function MeshText2D(text, options) {
@@ -44022,7 +44030,7 @@
 
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -44896,10 +44904,10 @@
 	
 	})(this);
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)))
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports) {
 
 	// shim for using process in browser
@@ -45085,7 +45093,7 @@
 
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports) {
 
 	module.exports = function( THREE ) {
@@ -46111,7 +46119,7 @@
 
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports) {
 
 	module.exports = [
@@ -217611,7 +217619,7 @@
 	];
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -221974,7 +221982,7 @@
 	};
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports) {
 
 	module.exports = [
@@ -231521,7 +231529,7 @@
 	];
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports) {
 
 	module.exports = [
@@ -231578,7 +231586,7 @@
 	];
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports) {
 
 	module.exports = [
@@ -234185,7 +234193,7 @@
 	];
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports) {
 
 	module.exports = "data:image/png;base64,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"
