@@ -1,6 +1,5 @@
 "use strict";
 const THREE = require("three");
-const DATA = require("dat-gui");
 const Stats = require("stats.js");
 const three_text2d_1 = require("three-text2d");
 const TWEEN = require("tween.js");
@@ -37,6 +36,14 @@ var displayedCities = {};
 var gui;
 init();
 animate();
+document.getElementById("opennav").onclick = function () { openNav(); };
+document.getElementById("closenav").onclick = function () { closeNav(); };
+function openNav() {
+    document.getElementById("mySidenav").style.width = "250px";
+}
+function closeNav() {
+    document.getElementById("mySidenav").style.width = "0";
+}
 function init() {
     container = document.createElement('div');
     document.body.appendChild(container);
@@ -52,28 +59,17 @@ function init() {
     setFloor();
     setTiles();
     addTexts();
-    customCity();
-}
-function customCity() {
-    gui = new DATA.GUI();
-    var city = gui.add(cityParameters, 'cityName').listen();
-    city.onChange(function (value) {
-        if ((value in cities) & !(value in displayedCities)) {
-            addCity(value, +cities[value].ID);
-        }
-    });
-    gui.open();
 }
 function addCity(name, tile_id) {
-    var sprite = new three_text2d_1.SpriteText2D(name, { align: three_text2d_1.textAlign.center, font: '25px Arial', fillStyle: '#FFFFFF', antialias: true });
+    var sprite = new three_text2d_1.SpriteText2D(name, { align: three_text2d_1.textAlign.center, font: '35px Arial', fillStyle: '#FFFFFF', antialias: true });
     sprite.material.depthTest = false;
     var tile_pos = id_to_tile.get(tile_id).position;
-    sprite.position.set(tile_pos.x, tile_pos.y - 10, 100);
+    sprite.position.set(tile_pos.x - 8, tile_pos.y + 10, 100);
     sprite.scale.set(0.2, 0.2, 0.2);
     scene.add(sprite);
     var geometry = new THREE.CylinderGeometry(diameter, diameter, 0.01, 6);
     geometry.computeLineDistances();
-    var material = new THREE.LineDashedMaterial({ color: 0xFFFFFF, dashSize: 0.5, gapSize: 0.7, linewidth: 2 });
+    var material = new THREE.LineDashedMaterial({ color: 0xFFFFFF, dashSize: 1.4, gapSize: 1.7, linewidth: 2 });
     var line = new THREE.Line(geometry, material);
     var z = 2 * tile_pos.z - height_fly + 0.01;
     line.position.set(tile_pos.x, tile_pos.y, z);
@@ -82,8 +78,10 @@ function addCity(name, tile_id) {
     scene.add(line);
     var geoLine = new THREE.Geometry();
     geoLine.vertices.push(new THREE.Vector3(tile_pos.x, tile_pos.y, z));
-    geoLine.vertices.push(new THREE.Vector3(tile_pos.x, tile_pos.y - 10, 100));
-    var link = new THREE.Line(geoLine, new THREE.LineBasicMaterial({}));
+    geoLine.vertices.push(new THREE.Vector3(tile_pos.x - 8, tile_pos.y + 5, 100));
+    geoLine.computeLineDistances();
+    var material = new THREE.LineDashedMaterial({ color: 0x999999, dashSize: 3, gapSize: 2, linewidth: 1 });
+    var link = new THREE.Line(geoLine, material);
     scene.add(link);
 }
 function addTexts() {
@@ -122,6 +120,8 @@ function setRenderer() {
 }
 function setStats() {
     stats = new Stats();
+    stats.dom.style.right = '0px';
+    stats.dom.style.left = '';
     document.body.appendChild(stats.dom);
 }
 function setTiles() {
@@ -292,32 +292,6 @@ function setControls() {
     controls.maxAzimuthAngle = Math.PI / 3;
     controls.rotateSpeed = 0.5;
     controls.zoomSpeed = 1.2;
-}
-function makeTextSprite(message, parameters) {
-    if (parameters === undefined)
-        parameters = {};
-    var fontface = parameters.hasOwnProperty("fontface") ? parameters["fontface"] : "Arial";
-    var fontsize = parameters.hasOwnProperty("fontsize") ? parameters["fontsize"] : 80;
-    var textColor = parameters.hasOwnProperty("textColor") ? parameters["textColor"] : { r: 255, g: 255, b: 255, a: 1.0 };
-    var canvas = document.createElement('canvas');
-    var context = canvas.getContext('2d');
-    context.font = "Bold " + fontsize + "px " + fontface;
-    var metrics = context.measureText(message);
-    var textWidth = metrics.width;
-    console.log(canvas.width);
-    context.fillStyle = "rgba(" + textColor.r + ", " + textColor.g + ", " + textColor.b + ", 1.0)";
-    context.fillText(message, 10, fontsize + 10);
-    var texture = new THREE.Texture(canvas);
-    texture.needsUpdate = true;
-    var spriteMaterial = new THREE.SpriteMaterial({
-        map: texture,
-        fog: true,
-        depthWrite: true,
-        depthTest: false
-    });
-    var sprite = new THREE.Sprite(spriteMaterial);
-    sprite.scale.set(0.5 * fontsize, 0.25 * fontsize, 0.75 * fontsize);
-    return sprite;
 }
 function onWindowResize() {
     var factor = 2;
