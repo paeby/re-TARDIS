@@ -7,7 +7,6 @@ require('awesomplete');
 var OrbitControls = require('three-orbit-controls')(THREE);
 var stops = require('../res/stops.json');
 var cities = require('../res/cities.json');
-console.log(cities);
 var centers = require('../res/centers.json');
 var nodes = require('../res/nodes.json');
 var matrix = require('../res/matrix.json');
@@ -33,8 +32,7 @@ var cityParameters = {
     cityName: 'Sion',
     tile_id: 377
 };
-var displayedCities = {};
-var gui;
+var displayedCities = [];
 init();
 animate();
 document.getElementById("opennav").style.visibility = "";
@@ -47,13 +45,20 @@ function closeNav() {
     document.getElementById("mySidenav").style.width = "0";
 }
 var lcities = Object.keys(cities);
-console.log("..." + lcities);
 var input = document.getElementById("city");
 var awesomplete = new Awesomplete(input, {
     minChars: 1,
     autoFirst: true,
     list: lcities
 });
+awesomplete.close = function () {
+    var city = input.value;
+    console.log(city);
+    if (city in cities) {
+        var c = cities[city];
+        addCity(city, +c.ID);
+    }
+};
 function init() {
     container = document.createElement('div');
     document.body.appendChild(container);
@@ -71,6 +76,26 @@ function init() {
     addTexts();
 }
 function addCity(name, tile_id) {
+    if (name in displayedCities) {
+        return;
+    }
+    displayedCities.push(name);
+    var cityMenu = document.getElementById("cities");
+    var itemMenu = document.createElement('li');
+    itemMenu.classList.add('pure-menu-item');
+    var linkMenu = document.createElement('a');
+    linkMenu.onclick = function () {
+        var tile = id_to_tile.get(tile_id);
+        tile.callback();
+    };
+    linkMenu.classList.add('pure-menu-link');
+    linkMenu.innerText = name;
+    var removeButton = document.createElement('button');
+    removeButton.innerHTML = '&times';
+    removeButton.classList.add('closeitem');
+    linkMenu.appendChild(removeButton);
+    itemMenu.appendChild(linkMenu);
+    cityMenu.appendChild(itemMenu);
     var sprite = new three_text2d_1.SpriteText2D(name, { align: three_text2d_1.textAlign.center, font: '35px Arial', fillStyle: '#FFFFFF', antialias: true });
     sprite.material.depthTest = false;
     var tile_pos = id_to_tile.get(tile_id).position;
@@ -93,6 +118,14 @@ function addCity(name, tile_id) {
     var material = new THREE.LineDashedMaterial({ color: 0x999999, dashSize: 3, gapSize: 2, linewidth: 1 });
     var link = new THREE.Line(geoLine, material);
     scene.add(link);
+    removeButton.onclick = function (e) {
+        e.stopPropagation();
+        displayedCities = displayedCities.filter(function (value) { value != name; });
+        scene.remove(sprite);
+        scene.remove(link);
+        scene.remove(line);
+        cityMenu.removeChild(itemMenu);
+    };
 }
 function addTexts() {
     for (var city in cities) {
@@ -238,7 +271,6 @@ function onDocumentMove(event) {
 }
 function onDocumentDown(event) {
     mouseDown = true;
-    console.log(camera.zoom, camera.position.z);
 }
 function onDocumentUp(event) {
     mouseDown = false;
