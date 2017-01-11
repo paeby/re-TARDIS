@@ -1,5 +1,5 @@
 import THREE = require("three");
-
+require("three-lut");
 import Stats = require("stats.js");
 import { SpriteText2D, textAlign } from 'three-text2d'
 import TWEEN = require('tween.js');
@@ -30,6 +30,7 @@ var id_to_tile: Map<number, CBMesh> = new Map();
 var tiles: CBMesh[] = []
 var colors: THREE.Color[] = []; // hold the generated colors
 var min: number;
+var max: number;
 var dots: THREE.Points;
 var renderer: THREE.WebGLRenderer;
 var container: HTMLElement;
@@ -70,7 +71,7 @@ document.addEventListener("awesomplete-close", function() {
     console.log(city)
     if (city in cities) {
         var c = cities[city]
-        addCity(city, +c.ID)
+        addCity(city, +c.ID, +c.x, +c.y)
     }
 })
 
@@ -89,6 +90,7 @@ function init() {
     setFloor();
     setTiles();
     addTexts();
+    addColorPalette();
 }
 
 
@@ -160,7 +162,7 @@ function addCity(name, tile_id) {
 function addTexts() {
     for (var city in cities) {
         var c = cities[city];
-        if(+c.population > 50000) {
+        if(+c.population > 70000) {
             // Add sprite
             addCity(city, +c.ID)
         }
@@ -320,7 +322,7 @@ function generateColorPalette() {
     var arr = matrix.reduce(function (p, c) {
         return p.concat(c);
     });
-    var max = Math.max.apply(null, arr);
+    max = Math.max.apply(null, arr);
     min = Math.min.apply(null, arr);
 
     var total = max - min;
@@ -328,6 +330,28 @@ function generateColorPalette() {
     for (var x = 0; x < total; x++) {
         var value = + ((i * x) / 360) 
         colors.push(new THREE.Color("hsl("+ value + ", 80%, 80%)")); // you can also alternate the saturation and value for even more contrast between the colors
+    }
+}
+
+function addColorPalette(){
+    var num_colors = (max - min);
+    console.log(num_colors)
+    var leg = new THREE.Lut( "rainbow", num_colors );
+    leg.setMax(max)
+    leg.setMin(min)
+    var legend = leg.setLegendOn( { 'layout':'horizontal', 'position': { 'x': 160, 'y': -100, 'z': 1 } } );
+    legend.scale.set(10,40,30)
+    scene.add(legend);
+
+    var labels = leg.setLegendLabels( { 'title': 'Travel Time', 'um': 'Min', 'ticks': 10 } );
+    
+    (labels['title']).scale.set(40,40,30)
+    scene.add ( labels['title']);
+    for ( var i = 0; i < Object.keys( labels[ 'ticks' ] ).length; i++ ) {
+        (labels[ 'ticks' ][ i ]).scale.set(40,40,30)
+        scene.add ( labels[ 'ticks' ][ i ]);
+        (labels[ 'lines' ][ i ]).scale.set(40,40,30)
+        scene.add ( labels[ 'lines' ][ i ]);
     }
 }
 

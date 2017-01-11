@@ -1,5 +1,6 @@
 "use strict";
 const THREE = require("three");
+require("three-lut");
 const Stats = require("stats.js");
 const three_text2d_1 = require("three-text2d");
 const TWEEN = require("tween.js");
@@ -25,6 +26,7 @@ var id_to_tile = new Map();
 var tiles = [];
 var colors = [];
 var min;
+var max;
 var dots;
 var renderer;
 var container;
@@ -56,7 +58,7 @@ document.addEventListener("awesomplete-close", function () {
     console.log(city);
     if (city in cities) {
         var c = cities[city];
-        addCity(city, +c.ID);
+        addCity(city, +c.ID, +c.x, +c.y);
     }
 });
 function init() {
@@ -74,6 +76,7 @@ function init() {
     setFloor();
     setTiles();
     addTexts();
+    addColorPalette();
 }
 function addCity(name, tile_id) {
     if (name in displayedCities) {
@@ -130,7 +133,7 @@ function addCity(name, tile_id) {
 function addTexts() {
     for (var city in cities) {
         var c = cities[city];
-        if (+c.population > 50000) {
+        if (+c.population > 70000) {
             addCity(city, +c.ID);
         }
     }
@@ -249,13 +252,32 @@ function generateColorPalette() {
     var arr = matrix.reduce(function (p, c) {
         return p.concat(c);
     });
-    var max = Math.max.apply(null, arr);
+    max = Math.max.apply(null, arr);
     min = Math.min.apply(null, arr);
     var total = max - min;
     var i = 360 / (total - 1);
     for (var x = 0; x < total; x++) {
         var value = +((i * x) / 360);
         colors.push(new THREE.Color("hsl(" + value + ", 80%, 80%)"));
+    }
+}
+function addColorPalette() {
+    var num_colors = (max - min);
+    console.log(num_colors);
+    var leg = new THREE.Lut("rainbow", num_colors);
+    leg.setMax(max);
+    leg.setMin(min);
+    var legend = leg.setLegendOn({ 'layout': 'horizontal', 'position': { 'x': 160, 'y': -100, 'z': 1 } });
+    legend.scale.set(10, 40, 30);
+    scene.add(legend);
+    var labels = leg.setLegendLabels({ 'title': 'Travel Time', 'um': 'Min', 'ticks': 10 });
+    (labels['title']).scale.set(40, 40, 30);
+    scene.add(labels['title']);
+    for (var i = 0; i < Object.keys(labels['ticks']).length; i++) {
+        (labels['ticks'][i]).scale.set(40, 40, 30);
+        scene.add(labels['ticks'][i]);
+        (labels['lines'][i]).scale.set(40, 40, 30);
+        scene.add(labels['lines'][i]);
     }
 }
 var hasMoved = false;
