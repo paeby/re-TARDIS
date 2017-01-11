@@ -51,14 +51,14 @@ var awesomplete = new Awesomplete(input, {
     autoFirst: true,
     list: lcities
 });
-awesomplete.close = function () {
+document.addEventListener("awesomplete-close", function () {
     var city = input.value;
     console.log(city);
     if (city in cities) {
         var c = cities[city];
         addCity(city, +c.ID);
     }
-};
+});
 function init() {
     container = document.createElement('div');
     document.body.appendChild(container);

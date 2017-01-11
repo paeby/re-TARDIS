@@ -65,14 +65,14 @@ var awesomplete = new Awesomplete(input, {
   list: lcities 
 });
 
-awesomplete.close = function() {
+document.addEventListener("awesomplete-close", function() {
     var city = (<HTMLInputElement> input).value
     console.log(city)
     if (city in cities) {
         var c = cities[city]
         addCity(city, +c.ID)
     }
-}
+})
 
 function init() {
     container = document.createElement('div')
