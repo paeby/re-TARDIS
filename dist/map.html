@@ -4,6 +4,10 @@
 <head>
 	<meta charset=utf-8>
 	<title>Switzerland</title>
+	<link rel="stylesheet" href="load.css">
+	<link rel="stylesheet" href="nav.css">
+	<link rel="stylesheet" href="pure-min.css">
+	<link rel="stylesheet" href="awesomplete.css">
 	<style>
 		body,
 		html {
@@ -23,11 +27,11 @@
 			position: absolute;
 			top: 20px;
 			left: 20px;
-			font-size: 30px;
+			font-size: 20px;
 			cursor: pointer;
 		}
 		
-		#innernav {
+		.innernav {
 			margin: 25px;
 			margin-top: 10px;
 		}
@@ -37,15 +41,22 @@
 			font-size: 20px;
 		}
 		
+		#top {
+		    padding-top: 30px; /* Place content 60px from the top */
+			padding-bottom: 10px;
+			background-color: white;
+		}
+		.pure-menu-link {
+			color: black;
+			background-color: lightgray;
+			margin-bottom: 5px;
+		}
+		
 		.closeitem {
 			float: right;
 			font-size: 20px;
 		}
 	</style>
-	<link rel="stylesheet" href="load.css">
-	<link rel="stylesheet" href="nav.css">
-	<link rel="stylesheet" href="pure-min.css">
-	<link rel="stylesheet" href="awesomplete.css">
 </head>
 
 <body>
@@ -65,15 +76,20 @@
 	</script>
 	<div id="mySidenav" class="sidenav">
 		<a href="#" id="closenav" class="closebtn">&times;</a>
-		<div id="innernav">
-			<div class="pure-form">
-				<input id="city" placeholder="type a city here" type="text"></input>
+		<div id="top">
+			<div class="innernav">
+				<h2>Cities</h2>
+				<div class="pure-form">
+					<input id="city" placeholder="type a city here" type="text"></input>
+				</div>
 			</div>
+		</div>
+		<div class="innernav">
 			<ul id="cities" class="pure-menu-list">
 			</ul>
 		</div>
 	</div>
-	<button class="pure-button" id="opennav" style="visibility: hidden;">&#9776; open da menu principessa</button>
+	<button class="pure-button" id="opennav" style="visibility: hidden;">&#9776; Cities</button>
 	<script src="bundle.js"></script>
 </body>
 
