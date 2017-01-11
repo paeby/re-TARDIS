@@ -3,6 +3,7 @@ const THREE = require("three");
 const Stats = require("stats.js");
 const three_text2d_1 = require("three-text2d");
 const TWEEN = require("tween.js");
+require('awesomplete');
 var OrbitControls = require('three-orbit-controls')(THREE);
 var stops = require('../res/stops.json');
 var cities = require('../res/cities.json');
@@ -45,6 +46,14 @@ function openNav() {
 function closeNav() {
     document.getElementById("mySidenav").style.width = "0";
 }
+var lcities = Object.keys(cities);
+console.log("..." + lcities);
+var input = document.getElementById("city");
+var awesomplete = new Awesomplete(input, {
+    minChars: 1,
+    autoFirst: true,
+    list: lcities
+});
 function init() {
     container = document.createElement('div');
     document.body.appendChild(container);

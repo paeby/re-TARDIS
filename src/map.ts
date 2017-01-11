@@ -3,11 +3,11 @@ import THREE = require("three");
 import Stats = require("stats.js");
 import { SpriteText2D, textAlign } from 'three-text2d'
 import TWEEN = require('tween.js');
-
+require('awesomplete');
 
 var OrbitControls = require('three-orbit-controls')(THREE);
 var stops = require('../res/stops.json')
-var cities = require('../res/cities.json')
+var cities: Map<string,any> = require('../res/cities.json')
 console.log(cities);
 var centers = require('../res/centers.json')
 var nodes: number[] = require('../res/nodes.json')
@@ -57,6 +57,14 @@ function closeNav() {
     document.getElementById("mySidenav").style.width = "0";
 }
 
+var lcities: string[] = Object.keys(cities);
+console.log("..." + lcities);
+var input = document.getElementById("city");
+var awesomplete = new Awesomplete(input, {
+  minChars: 1,
+  autoFirst: true,
+  list: lcities
+});
 
 function init() {
     container = document.createElement('div')

@@ -49,6 +49,7 @@
 	const Stats = __webpack_require__(2);
 	const three_text2d_1 = __webpack_require__(3);
 	const TWEEN = __webpack_require__(9);
+	__webpack_require__(18);
 	var OrbitControls = __webpack_require__(11)(THREE);
 	var stops = __webpack_require__(12);
 	var cities = __webpack_require__(13);
@@ -91,6 +92,14 @@
 	function closeNav() {
 	    document.getElementById("mySidenav").style.width = "0";
 	}
+	var lcities = Object.keys(cities);
+	console.log("..." + lcities);
+	var input = document.getElementById("city");
+	var awesomplete = new Awesomplete(input, {
+	    minChars: 1,
+	    autoFirst: true,
+	    list: lcities
+	});
 	function init() {
 	    container = document.createElement('div');
 	    document.body.appendChild(container);
@@ -234190,6 +234199,455 @@
 /***/ function(module, exports) {
 
 	module.exports = "data:image/png;base64,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"
+
+/***/ },
+/* 18 */
+/***/ function(module, exports) {
+
+	/**
+	 * Simple, lightweight, usable local autocomplete library for modern browsers
+	 * Because there weren’t enough autocomplete scripts in the world? Because I’m completely insane and have NIH syndrome? Probably both. :P
+	 * @author Lea Verou http://leaverou.github.io/awesomplete
+	 * MIT license
+	 */
+	
+	(function () {
+	
+	var _ = function (input, o) {
+		var me = this;
+	
+		// Setup
+	
+		this.input = $(input);
+		this.input.setAttribute("autocomplete", "off");
+		this.input.setAttribute("aria-autocomplete", "list");
+	
+		o = o || {};
+	
+		configure(this, {
+			minChars: 2,
+			maxItems: 10,
+			autoFirst: false,
+			data: _.DATA,
+			filter: _.FILTER_CONTAINS,
+			sort: _.SORT_BYLENGTH,
+			item: _.ITEM,
+			replace: _.REPLACE
+		}, o);
+	
+		this.index = -1;
+	
+		// Create necessary elements
+	
+		this.container = $.create("div", {
+			className: "awesomplete",
+			around: input
+		});
+	
+		this.ul = $.create("ul", {
+			hidden: "hidden",
+			inside: this.container
+		});
+	
+		this.status = $.create("span", {
+			className: "visually-hidden",
+			role: "status",
+			"aria-live": "assertive",
+			"aria-relevant": "additions",
+			inside: this.container
+		});
+	
+		// Bind events
+	
+		$.bind(this.input, {
+			"input": this.evaluate.bind(this),
+			"blur": this.close.bind(this, { reason: "blur" }),
+			"keydown": function(evt) {
+				var c = evt.keyCode;
+	
+				// If the dropdown `ul` is in view, then act on keydown for the following keys:
+				// Enter / Esc / Up / Down
+				if(me.opened) {
+					if (c === 13 && me.selected) { // Enter
+						evt.preventDefault();
+						me.select();
+					}
+					else if (c === 27) { // Esc
+						me.close({ reason: "esc" });
+					}
+					else if (c === 38 || c === 40) { // Down/Up arrow
+						evt.preventDefault();
+						me[c === 38? "previous" : "next"]();
+					}
+				}
+			}
+		});
+	
+		$.bind(this.input.form, {"submit": this.close.bind(this, { reason: "submit" })});
+	
+		$.bind(this.ul, {"mousedown": function(evt) {
+			var li = evt.target;
+	
+			if (li !== this) {
+	
+				while (li && !/li/i.test(li.nodeName)) {
+					li = li.parentNode;
+				}
+	
+				if (li && evt.button === 0) {  // Only select on left click
+					evt.preventDefault();
+					me.select(li, evt.target);
+				}
+			}
+		}});
+	
+		if (this.input.hasAttribute("list")) {
+			this.list = "#" + this.input.getAttribute("list");
+			this.input.removeAttribute("list");
+		}
+		else {
+			this.list = this.input.getAttribute("data-list") || o.list || [];
+		}
+	
+		_.all.push(this);
+	};
+	
+	_.prototype = {
+		set list(list) {
+			if (Array.isArray(list)) {
+				this._list = list;
+			}
+			else if (typeof list === "string" && list.indexOf(",") > -1) {
+					this._list = list.split(/\s*,\s*/);
+			}
+			else { // Element or CSS selector
+				list = $(list);
+	
+				if (list && list.children) {
+					var items = [];
+					slice.apply(list.children).forEach(function (el) {
+						if (!el.disabled) {
+							var text = el.textContent.trim();
+							var value = el.value || text;
+							var label = el.label || text;
+							if (value !== "") {
+								items.push({ label: label, value: value });
+							}
+						}
+					});
+					this._list = items;
+				}
+			}
+	
+			if (document.activeElement === this.input) {
+				this.evaluate();
+			}
+		},
+	
+		get selected() {
+			return this.index > -1;
+		},
+	
+		get opened() {
+			return !this.ul.hasAttribute("hidden");
+		},
+	
+		close: function (o) {
+			if (!this.opened) {
+				return;
+			}
+	
+			this.ul.setAttribute("hidden", "");
+			this.index = -1;
+	
+			$.fire(this.input, "awesomplete-close", o || {});
+		},
+	
+		open: function () {
+			this.ul.removeAttribute("hidden");
+	
+			if (this.autoFirst && this.index === -1) {
+				this.goto(0);
+			}
+	
+			$.fire(this.input, "awesomplete-open");
+		},
+	
+		next: function () {
+			var count = this.ul.children.length;
+	
+			this.goto(this.index < count - 1? this.index + 1 : -1);
+		},
+	
+		previous: function () {
+			var count = this.ul.children.length;
+	
+			this.goto(this.selected? this.index - 1 : count - 1);
+		},
+	
+		// Should not be used, highlights specific item without any checks!
+		goto: function (i) {
+			var lis = this.ul.children;
+	
+			if (this.selected) {
+				lis[this.index].setAttribute("aria-selected", "false");
+			}
+	
+			this.index = i;
+	
+			if (i > -1 && lis.length > 0) {
+				lis[i].setAttribute("aria-selected", "true");
+				this.status.textContent = lis[i].textContent;
+	
+				$.fire(this.input, "awesomplete-highlight", {
+					text: this.suggestions[this.index]
+				});
+			}
+		},
+	
+		select: function (selected, origin) {
+			if (selected) {
+				this.index = $.siblingIndex(selected);
+			} else {
+				selected = this.ul.children[this.index];
+			}
+	
+			if (selected) {
+				var suggestion = this.suggestions[this.index];
+	
+				var allowed = $.fire(this.input, "awesomplete-select", {
+					text: suggestion,
+					origin: origin || selected
+				});
+	
+				if (allowed) {
+					this.replace(suggestion);
+					this.close({ reason: "select" });
+					$.fire(this.input, "awesomplete-selectcomplete", {
+						text: suggestion
+					});
+				}
+			}
+		},
+	
+		evaluate: function() {
+			var me = this;
+			var value = this.input.value;
+	
+			if (value.length >= this.minChars && this._list.length > 0) {
+				this.index = -1;
+				// Populate list with options that match
+				this.ul.innerHTML = "";
+	
+				this.suggestions = this._list
+					.map(function(item) {
+						return new Suggestion(me.data(item, value));
+					})
+					.filter(function(item) {
+						return me.filter(item, value);
+					})
+					.sort(this.sort)
+					.slice(0, this.maxItems);
+	
+				this.suggestions.forEach(function(text) {
+						me.ul.appendChild(me.item(text, value));
+					});
+	
+				if (this.ul.children.length === 0) {
+					this.close({ reason: "nomatches" });
+				} else {
+					this.open();
+				}
+			}
+			else {
+				this.close({ reason: "nomatches" });
+			}
+		}
+	};
+	
+	// Static methods/properties
+	
+	_.all = [];
+	
+	_.FILTER_CONTAINS = function (text, input) {
+		return RegExp($.regExpEscape(input.trim()), "i").test(text);
+	};
+	
+	_.FILTER_STARTSWITH = function (text, input) {
+		return RegExp("^" + $.regExpEscape(input.trim()), "i").test(text);
+	};
+	
+	_.SORT_BYLENGTH = function (a, b) {
+		if (a.length !== b.length) {
+			return a.length - b.length;
+		}
+	
+		return a < b? -1 : 1;
+	};
+	
+	_.ITEM = function (text, input) {
+		var html = input === '' ? text : text.replace(RegExp($.regExpEscape(input.trim()), "gi"), "<mark>$&</mark>");
+		return $.create("li", {
+			innerHTML: html,
+			"aria-selected": "false"
+		});
+	};
+	
+	_.REPLACE = function (text) {
+		this.input.value = text.value;
+	};
+	
+	_.DATA = function (item/*, input*/) { return item; };
+	
+	// Private functions
+	
+	function Suggestion(data) {
+		var o = Array.isArray(data)
+		  ? { label: data[0], value: data[1] }
+		  : typeof data === "object" && "label" in data && "value" in data ? data : { label: data, value: data };
+	
+		this.label = o.label || o.value;
+		this.value = o.value;
+	}
+	Object.defineProperty(Suggestion.prototype = Object.create(String.prototype), "length", {
+		get: function() { return this.label.length; }
+	});
+	Suggestion.prototype.toString = Suggestion.prototype.valueOf = function () {
+		return "" + this.label;
+	};
+	
+	function configure(instance, properties, o) {
+		for (var i in properties) {
+			var initial = properties[i],
+			    attrValue = instance.input.getAttribute("data-" + i.toLowerCase());
+	
+			if (typeof initial === "number") {
+				instance[i] = parseInt(attrValue);
+			}
+			else if (initial === false) { // Boolean options must be false by default anyway
+				instance[i] = attrValue !== null;
+			}
+			else if (initial instanceof Function) {
+				instance[i] = null;
+			}
+			else {
+				instance[i] = attrValue;
+			}
+	
+			if (!instance[i] && instance[i] !== 0) {
+				instance[i] = (i in o)? o[i] : initial;
+			}
+		}
+	}
+	
+	// Helpers
+	
+	var slice = Array.prototype.slice;
+	
+	function $(expr, con) {
+		return typeof expr === "string"? (con || document).querySelector(expr) : expr || null;
+	}
+	
+	function $$(expr, con) {
+		return slice.call((con || document).querySelectorAll(expr));
+	}
+	
+	$.create = function(tag, o) {
+		var element = document.createElement(tag);
+	
+		for (var i in o) {
+			var val = o[i];
+	
+			if (i === "inside") {
+				$(val).appendChild(element);
+			}
+			else if (i === "around") {
+				var ref = $(val);
+				ref.parentNode.insertBefore(element, ref);
+				element.appendChild(ref);
+			}
+			else if (i in element) {
+				element[i] = val;
+			}
+			else {
+				element.setAttribute(i, val);
+			}
+		}
+	
+		return element;
+	};
+	
+	$.bind = function(element, o) {
+		if (element) {
+			for (var event in o) {
+				var callback = o[event];
+	
+				event.split(/\s+/).forEach(function (event) {
+					element.addEventListener(event, callback);
+				});
+			}
+		}
+	};
+	
+	$.fire = function(target, type, properties) {
+		var evt = document.createEvent("HTMLEvents");
+	
+		evt.initEvent(type, true, true );
+	
+		for (var j in properties) {
+			evt[j] = properties[j];
+		}
+	
+		return target.dispatchEvent(evt);
+	};
+	
+	$.regExpEscape = function (s) {
+		return s.replace(/[-\\^$*+?.()|[\]{}]/g, "\\$&");
+	};
+	
+	$.siblingIndex = function (el) {
+		/* eslint-disable no-cond-assign */
+		for (var i = 0; el = el.previousElementSibling; i++);
+		return i;
+	};
+	
+	// Initialization
+	
+	function init() {
+		$$("input.awesomplete").forEach(function (input) {
+			new _(input);
+		});
+	}
+	
+	// Are we in a browser? Check for Document constructor
+	if (typeof Document !== "undefined") {
+		// DOM already loaded?
+		if (document.readyState !== "loading") {
+			init();
+		}
+		else {
+			// Wait for it
+			document.addEventListener("DOMContentLoaded", init);
+		}
+	}
+	
+	_.$ = $;
+	_.$$ = $$;
+	
+	// Make sure to export Awesomplete on self when in a browser
+	if (typeof self !== "undefined") {
+		self.Awesomplete = _;
+	}
+	
+	// Expose Awesomplete as a CJS module
+	if (typeof module === "object" && module.exports) {
+		module.exports = _;
+	}
+	
+	return _;
+	
+	}());
+
 
 /***/ }
 /******/ ]);

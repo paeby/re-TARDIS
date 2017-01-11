@@ -19,17 +19,33 @@
 		}
 		
 		#opennav {
-			color: white;
+			color: black;
 			position: absolute;
 			top: 20px;
 			left: 20px;
 			font-size: 30px;
 			cursor: pointer;
 		}
+		
+		#innernav {
+			margin: 25px;
+			margin-top: 10px;
+		}
+		
+		#cities {
+			margin-top: 30px;
+			font-size: 20px;
+		}
+		
+		.closeitem {
+			float: right;
+			font-size: 20px;
+		}
 	</style>
 	<link rel="stylesheet" href="load.css">
 	<link rel="stylesheet" href="nav.css">
-	<link rel="stylesheet" href="milligram.min.css">
+	<link rel="stylesheet" href="pure-min.css">
+	<link rel="stylesheet" href="awesomplete.css">
 </head>
 
 <body>
@@ -49,14 +65,18 @@
 	</script>
 	<div id="mySidenav" class="sidenav">
 		<a href="#" id="closenav" class="closebtn">&times;</a>
-		<input placeholder="type a city here" type="text"></input>
-		<ul>
-			<li>Coffee</li>
-			<li>Tea</li>
-			<li>Milk</li>
-		</ul>
+		<div id="innernav">
+			<div class="pure-form">
+				<input id="city" placeholder="type a city here" type="text"></input>
+			</div>
+			<ul id="cities" class="pure-menu-list">
+				<li class="pure-menu-item"><a href="#" class="pure-menu-link">Lausanne<button class="closeitem">&times;</button> </a> </li>
+				<li class="pure-menu-item"><a href="#" class="pure-menu-link">Lausanne<button class="closeitem">&times;</button></a></li>
+				<li class="pure-menu-list"><a href="#" class="pure-menu-link">Lausanne<button class="closeitem">&times;</button></a></li>
+			</ul>
+		</div>
 	</div>
-	<button class="button" id="opennav" style="visibility: hidden;">&#9776; open da menu principessa</button>
+	<button class="pure-button" id="opennav" style="visibility: hidden;">&#9776; open da menu principessa</button>
 	<script src="bundle.js"></script>
 </body>
 
