@@ -210,7 +210,7 @@ function setStats() {
 function setTiles() {
     // Color palette for different distances
     generateColorPalette();
-
+    
     // Create points from stops
     genPoints();
 
@@ -317,7 +317,7 @@ function genPoints() {
     dots.visible = false;
 }
 
-
+/*
 function generateColorPalette() {
     var arr = matrix.reduce(function (p, c) {
         return p.concat(c);
@@ -329,29 +329,85 @@ function generateColorPalette() {
     var i = 360 / (total - 1); // distribute the colors evenly on the hue range
     for (var x = 0; x < total; x++) {
         var value = + ((i * x) / 360) 
-        colors.push(new THREE.Color("hsl("+ value + ", 80%, 80%)")); // you can also alternate the saturation and value for even more contrast between the colors
+        //var color = new THREE.Color("hsl("+ value + ", 80%, 80%)")
+        var color = new THREE.Color("hsl(0.5, 80%, 80%)")
+        console.log(color)
+        colors.push(color); // you can also alternate the saturation and value for even more contrast between the colors
     }
+}
+*/
+
+function generateColorPalette() {
+    var arr = matrix.reduce(function (p, c) {
+        return p.concat(c);
+    });
+    max = Math.max.apply(null, arr);
+    min = Math.min.apply(null, arr);
+
+    var total = max-min;
+    var i = 360 / (total - 1); // distribute the colors evenly on the hue range
+    
+    for (var x=0; x<total; x++)
+    {
+        console.log((i * x)/(360/0.666))
+        var c = HSVtoRGB((i * x)/(360/0.666), 0.8, 0.8)
+        var color = new THREE.Color(c.r,c.g,c.b);
+        colors.push(color); // you can also alternate the saturation and value for even more contrast between the colors
+    }
+}
+
+function HSVtoRGB(h, s, v) {
+  var r, g, b;
+
+  var i = Math.floor(h * 6);
+  var f = h * 6 - i;
+  var p = v * (1 - s);
+  var q = v * (1 - f * s);
+  var t = v * (1 - (1 - f) * s);
+
+  switch (i % 6) {
+    case 0: r = v, g = t, b = p; break;
+    case 1: r = q, g = v, b = p; break;
+    case 2: r = p, g = v, b = t; break;
+    case 3: r = p, g = q, b = v; break;
+    case 4: r = t, g = p, b = v; break;
+    case 5: r = v, g = p, b = q; break;
+  }
+  return { r:r, g:g, b:b };
 }
 
 function addColorPalette(){
     var num_colors = (max - min);
-    console.log(num_colors)
-    var leg = new THREE.Lut( "rainbow", num_colors );
-    leg.setMax(max)
-    leg.setMin(min)
-    var legend = leg.setLegendOn( { 'layout':'horizontal', 'position': { 'x': 160, 'y': -100, 'z': 1 } } );
-    legend.scale.set(10,40,30)
-    scene.add(legend);
-
-    var labels = leg.setLegendLabels( { 'title': 'Travel Time', 'um': 'Min', 'ticks': 10 } );
+    var material = new THREE.MeshPhongMaterial({ color: 0x5e7eff, overdraw: 0.5, shading: THREE.FlatShading, shininess: 0, specular: 0 });
+    var geometry = new THREE.CylinderGeometry(diameter/1.2, diameter/1.2, 10, 6);
     
-    (labels['title']).scale.set(40,40,30)
-    scene.add ( labels['title']);
-    for ( var i = 0; i < Object.keys( labels[ 'ticks' ] ).length; i++ ) {
-        (labels[ 'ticks' ][ i ]).scale.set(40,40,30)
-        scene.add ( labels[ 'ticks' ][ i ]);
-        (labels[ 'lines' ][ i ]).scale.set(40,40,30)
-        scene.add ( labels[ 'lines' ][ i ]);
+    for(var i = 0; i < num_colors; i=i+5) {
+        var mat = material.clone()
+        mat.color.set(colors[i])
+        var tile = new THREE.Mesh(geometry, mat)
+        tile.position.set(80+(i/5)*diameter*1.3, -100, 40)
+        tile.rotation.x = Math.PI / 2;
+        tile.rotation.y = Math.PI / 2;
+        tile.updateMatrix();
+        tile.matrixAutoUpdate = false;
+        tile.castShadow = true;
+        tile.receiveShadow = true;
+        console.log(tile.material.color)
+        scene.add(tile);
+
+        if(i%15 === 0){
+            var sprite = new SpriteText2D(i, { align: textAlign.center, font: '25px Arial', fillStyle: '#FFFFFF', antialias: true })
+            sprite.material.depthTest = false;
+            sprite.position.set(80+(i/5)*diameter*1.3, -100, 45);
+            sprite.scale.set(0.2, 0.2, 0.2)
+            scene.add(sprite);
+        }
+
+        var sprite = new SpriteText2D("Travel time [minutes]", { align: textAlign.center, font: '25px Arial', fillStyle: '#FFFFFF', antialias: true })
+        sprite.material.depthTest = false;
+        sprite.position.set(80+(num_colors/10)*diameter*1.3, -90, 45);
+        sprite.scale.set(0.2, 0.2, 0.2)
+        scene.add(sprite);
     }
 }
 
