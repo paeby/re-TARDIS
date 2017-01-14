@@ -1,5 +1,5 @@
 import THREE = require("three");
-require("three-lut");
+
 import Stats = require("stats.js");
 import { SpriteText2D, textAlign } from 'three-text2d'
 import TWEEN = require('tween.js');
@@ -14,11 +14,12 @@ var nodes: number[] = require('../res/nodes.json')
 var matrix: number[][] = require('../res/matrix.json')
 
 var spark1 = require("url?mimetype=image/png!../res/spark1.png");
-var diameter = 3.2
+var diameter = 3.25
 var height_fly = 30;
-var height_base = 5.0;
+var height_base = 3.0;
 var height_factor = 4.0;
 var dotSize = 6.0;
+
 
 // ----- THREE VARIABLES -----
 var stats: Stats;
@@ -34,6 +35,8 @@ var max: number;
 var dots: THREE.Points;
 var renderer: THREE.WebGLRenderer;
 var container: HTMLElement;
+var color_s = "80"
+var color_l = "70"
 
 // ----- CUSTOM CITY SELECTOR -----
 var cityParameters = {
@@ -44,6 +47,7 @@ var displayedCities: string[] = []
 
 init();
 animate();
+
 
 document.getElementById("opennav").style.visibility = "";
 document.getElementById("opennav").onclick = function() { openNav()}
@@ -68,10 +72,10 @@ var awesomplete = new Awesomplete(input, {
 
 document.addEventListener("awesomplete-close", function() {
     var city = (<HTMLInputElement> input).value
-    console.log(city)
+  //  console.log(city)
     if (city in cities) {
         var c = cities[city]
-        addCity(city, +c.ID, +c.x, +c.y)
+        addCity(city, +c.ID)
     }
 })
 
@@ -122,11 +126,11 @@ function addCity(name, tile_id) {
     itemMenu.appendChild(linkMenu)
     cityMenu.appendChild(itemMenu)
 
-    var sprite = new SpriteText2D(name, { align: textAlign.center, font: '35px Arial', fillStyle: '#FFFFFF', antialias: true })
+    var sprite = new SpriteText2D(name, { align: textAlign.center, font: '70px Arial', fillStyle: '#FFFFFF', antialias: true })
     sprite.material.depthTest = false;
     var tile_pos = id_to_tile.get(tile_id).position
     sprite.position.set(tile_pos.x-8, tile_pos.y+10, 100);
-    sprite.scale.set(0.2, 0.2, 0.2)
+    sprite.scale.set(0.1, 0.1, 0.1)
     scene.add(sprite);
 
     // Add dashed line
@@ -193,7 +197,7 @@ function setRenderer() {
     renderer.gammaInput = true;
     renderer.gammaOutput = true;
     renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.type = THREE.PCFShadowMap;
     renderer.shadowMap.autoUpdate = false;
     renderer.shadowMap.needsUpdate = true;
 }
@@ -263,15 +267,23 @@ function genTiles() {
             var distance = tile.position.distanceTo(id_to_tile.get(id).position)
             var timeout = distance*5 //the more distance there is, the more timeout (for a wave effect)
             //console.log(timeout)
-            var color = new THREE.Color("hsl("+distance*2+", 80%, 70%)")
+            var color = new THREE.Color("hsl("+distance*1.5+", "+color_s+"%, "+color_l+"%)")
             var material = <THREE.MeshPhongMaterial>tile.material;
-            function changeColor(material, color, id):() => any {
+            var b = Math.random() >= 0.9
+            function changeColor(material, color, id, b):() => any {
                 return () => {
                 //Shoud launch another tween to fade the color. But im lazy
-                material.color.set(color);
+                material.color.set(color)
+                if (b) {
+                     material.opacity = 0.6
+                     material.color.set(new THREE.Color("gray"));
+                     material.transparent = true
+                } else {
+                    material.transparent = false
+                }
                 }
             }
-            new TWEEN.Tween(0).to(100, timeout).onComplete(changeColor(material, color, tile.id)).start()
+            new TWEEN.Tween(0).to(100, timeout).onComplete(changeColor(material, color, tile.id, b)).start()
         }
     }
 
@@ -317,25 +329,6 @@ function genPoints() {
     dots.visible = false;
 }
 
-/*
-function generateColorPalette() {
-    var arr = matrix.reduce(function (p, c) {
-        return p.concat(c);
-    });
-    max = Math.max.apply(null, arr);
-    min = Math.min.apply(null, arr);
-
-    var total = max - min;
-    var i = 360 / (total - 1); // distribute the colors evenly on the hue range
-    for (var x = 0; x < total; x++) {
-        var value = + ((i * x) / 360) 
-        //var color = new THREE.Color("hsl("+ value + ", 80%, 80%)")
-        var color = new THREE.Color("hsl(0.5, 80%, 80%)")
-        console.log(color)
-        colors.push(color); // you can also alternate the saturation and value for even more contrast between the colors
-    }
-}
-*/
 
 function generateColorPalette() {
     var arr = matrix.reduce(function (p, c) {
@@ -349,37 +342,17 @@ function generateColorPalette() {
     
     for (var x=0; x<total; x++)
     {
-        console.log((i * x)/(360/0.666))
-        var c = HSVtoRGB((i * x)/(360/0.666), 0.8, 0.8)
-        var color = new THREE.Color(c.r,c.g,c.b);
+        var value = (i * x)/(360/250)
+        //console.log(value)
+        var color = new THREE.Color("hsl("+value+", "+color_s+"%, "+color_l+"%)")
         colors.push(color); // you can also alternate the saturation and value for even more contrast between the colors
     }
-}
-
-function HSVtoRGB(h, s, v) {
-  var r, g, b;
-
-  var i = Math.floor(h * 6);
-  var f = h * 6 - i;
-  var p = v * (1 - s);
-  var q = v * (1 - f * s);
-  var t = v * (1 - (1 - f) * s);
-
-  switch (i % 6) {
-    case 0: r = v, g = t, b = p; break;
-    case 1: r = q, g = v, b = p; break;
-    case 2: r = p, g = v, b = t; break;
-    case 3: r = p, g = q, b = v; break;
-    case 4: r = t, g = p, b = v; break;
-    case 5: r = v, g = p, b = q; break;
-  }
-  return { r:r, g:g, b:b };
 }
 
 function addColorPalette(){
     var num_colors = (max - min);
     var material = new THREE.MeshPhongMaterial({ color: 0x5e7eff, overdraw: 0.5, shading: THREE.FlatShading, shininess: 0, specular: 0 });
-    var geometry = new THREE.CylinderGeometry(diameter/1.2, diameter/1.2, 10, 6);
+    var geometry = new THREE.CylinderGeometry(diameter/1.2, diameter/1.2, 5, 6);
     
     for(var i = 0; i < num_colors; i=i+5) {
         var mat = material.clone()
@@ -392,21 +365,20 @@ function addColorPalette(){
         tile.matrixAutoUpdate = false;
         tile.castShadow = true;
         tile.receiveShadow = true;
-        console.log(tile.material.color)
         scene.add(tile);
 
         if(i%15 === 0){
-            var sprite = new SpriteText2D(i, { align: textAlign.center, font: '25px Arial', fillStyle: '#FFFFFF', antialias: true })
+            var sprite = new SpriteText2D(i.toString(), { align: textAlign.center, font: '50px Arial', fillStyle: '#FFFFFF', antialias: true })
             sprite.material.depthTest = false;
             sprite.position.set(80+(i/5)*diameter*1.3, -100, 45);
-            sprite.scale.set(0.2, 0.2, 0.2)
+            sprite.scale.set(0.1, 0.1, 0.1)
             scene.add(sprite);
         }
 
-        var sprite = new SpriteText2D("Travel time [minutes]", { align: textAlign.center, font: '25px Arial', fillStyle: '#FFFFFF', antialias: true })
+        var sprite = new SpriteText2D("Travel time [minutes]", { align: textAlign.center, font: '50px Arial', fillStyle: '#FFFFFF', antialias: true })
         sprite.material.depthTest = false;
         sprite.position.set(80+(num_colors/10)*diameter*1.3, -90, 45);
-        sprite.scale.set(0.2, 0.2, 0.2)
+        sprite.scale.set(0.1, 0.1, 0.1)
         scene.add(sprite);
     }
 }
@@ -449,7 +421,7 @@ function click(event) {
     var intersects = raycaster.intersectObjects(tiles);
     if (intersects.length > 0) {
         var tile = <CBMesh>intersects[0].object;
-        console.log(tile);
+   //     console.log(tile);
         tile.callback();
     }
 }
@@ -460,7 +432,7 @@ function setCamera() {
     var height = window.innerHeight;
     camera = new THREE.OrthographicCamera(
         -width / factor, width / factor, height / factor, -height / factor, -1000, 2000);
-    camera.position.z = 300;
+    camera.position.z = 400;
     camera.zoom = width / 900 * 2;
     camera.updateProjectionMatrix();
 }
@@ -468,19 +440,24 @@ function setCamera() {
 function setLights() {
 
     var ambient = new THREE.AmbientLight(0xffffff, 0.15);
-    var spotLight = new THREE.SpotLight(0xffffff, 0.5);
-    spotLight.position.set(70, 0, 250);
-    spotLight.target.position.set(30, 0, 0);
-    spotLight.castShadow = true;
-    spotLight.angle = Math.PI / 4;
-    spotLight.penumbra = 0.5;
-    spotLight.decay = 1;
-    spotLight.distance = 500;
-    spotLight.shadow.mapSize.width = 1024;
-    spotLight.shadow.mapSize.height = 1024;
-    scene.add(spotLight);
-    scene.add(spotLight.target);
+    var light = new THREE.DirectionalLight(0xffffff, 0.25);
+    light.position.set(200, -100, 300);
+    light.target.position.set(30, 0, 0);
+    light.castShadow = true;
+    light.shadow.mapSize.width = 4096;
+    light.shadow.mapSize.height = 4096;
+    light.shadowCameraNear = 200;
+    light.shadowCameraLeft = -250;
+    light.shadowCameraRight = 200;
+    light.shadowCameraTop = 200;
+    light.shadowCameraBottom = -200;
+    light.shadowCameraFar = 500; 
+  //  console.log(light.shadowCameraFar)
+
+    scene.add(light);
+    scene.add(light.target);
     scene.add(ambient);
+
 
 
 }
@@ -499,13 +476,15 @@ function setControls() {
     controls.maxAzimuthAngle = Math.PI / 3;
     controls.rotateSpeed = 0.5;
     controls.zoomSpeed = 1.2;
+  //  controls.rotateStart.set(-100,-100)
+
 }
 
 function onWindowResize() {
     var factor = 2;
     var width = window.innerWidth;
     var height = window.innerHeight;
-    console.log(factor);
+  //  console.log(factor);
     camera.left = -width / factor;
     camera.right = width / factor;
     camera.top = height / factor;
