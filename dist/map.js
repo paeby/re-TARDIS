@@ -107,6 +107,7 @@ function addCity(name, tile_id) {
     sprite.position.set(tile_pos.x - 8, tile_pos.y + 10, 100);
     sprite.scale.set(0.1, 0.1, 0.1);
     scene.add(sprite);
+    console.log(tile_id + " " + name);
     tile_to_sprite[tile_id] = sprite;
     tile_to_name[tile_id] = name;
     var geometry = new THREE.CylinderGeometry(diameter, diameter, 0.01, 6);
@@ -194,6 +195,7 @@ function genTiles() {
         tile.rotation.y = Math.PI / 2;
         tile.updateMatrix();
         tile.matrixAutoUpdate = false;
+        tile.ID = t.ID;
         tile.name = "t" + t.ID;
         tile.callback = function () {
             updateMap(t.ID);
@@ -229,7 +231,7 @@ function genTiles() {
                     }
                 };
             }
-            new TWEEN.Tween(0).to(100, timeout).onComplete(changeColor(material, color, tile.id, b, distance)).start();
+            new TWEEN.Tween(0).to(100, timeout).onComplete(changeColor(material, color, tile.ID, b, distance)).start();
         }
     }
 }
