@@ -36,6 +36,8 @@ var cityParameters = {
     tile_id: 377
 };
 var displayedCities = [];
+var tile_to_sprite = new Map();
+var tile_to_name = new Map();
 init();
 animate();
 document.getElementById("opennav").style.visibility = "";
@@ -105,6 +107,8 @@ function addCity(name, tile_id) {
     sprite.position.set(tile_pos.x - 8, tile_pos.y + 10, 100);
     sprite.scale.set(0.1, 0.1, 0.1);
     scene.add(sprite);
+    tile_to_sprite[tile_id] = sprite;
+    tile_to_name[tile_id] = name;
     var geometry = new THREE.CylinderGeometry(diameter, diameter, 0.01, 6);
     geometry.computeLineDistances();
     var material = new THREE.LineDashedMaterial({ color: 0xFFFFFF, dashSize: 1.4, gapSize: 1.7, linewidth: 2 });
@@ -128,6 +132,7 @@ function addCity(name, tile_id) {
         scene.remove(link);
         scene.remove(line);
         cityMenu.removeChild(itemMenu);
+        tile_to_sprite.delete(tile_id);
     };
 }
 function addTexts() {
@@ -204,12 +209,16 @@ function genTiles() {
             var tile = tiles[t_index];
             var distance = tile.position.distanceTo(id_to_tile.get(id).position);
             var timeout = distance * 5;
-            var color = new THREE.Color("hsl(" + distance * 1.5 + ", " + color_s + "%, " + color_l + "%)");
+            var color = new THREE.Color("hsl(" + distance / 1.5 + ", " + color_s + "%, " + color_l + "%)");
             var material = tile.material;
-            var b = Math.random() >= 0.9;
-            function changeColor(material, color, id, b) {
+            var b = Math.random() >= 0.97;
+            function changeColor(material, color, id, b, time) {
                 return () => {
                     material.color.set(color);
+                    if (id in tile_to_sprite) {
+                        var sprite = tile_to_sprite[id];
+                        sprite.text = tile_to_name[id] + " " + Math.floor(time) + "''";
+                    }
                     if (b) {
                         material.opacity = 0.6;
                         material.color.set(new THREE.Color("gray"));
@@ -220,7 +229,7 @@ function genTiles() {
                     }
                 };
             }
-            new TWEEN.Tween(0).to(100, timeout).onComplete(changeColor(material, color, tile.id, b)).start();
+            new TWEEN.Tween(0).to(100, timeout).onComplete(changeColor(material, color, tile.id, b, distance)).start();
         }
     }
 }
