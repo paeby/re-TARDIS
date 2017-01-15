@@ -4,8 +4,8 @@ import Stats = require("stats.js");
 import { SpriteText2D, textAlign } from 'three-text2d'
 import TWEEN = require('tween.js');
 require('awesomplete');
+import { OrbitControls } from 'three-orbitcontrols-ts';
 
-var OrbitControls = require('three-orbit-controls')(THREE);
 var stops = require('../res/stops.json')
 var cities: Map<string, any> = require('../res/cities.json')
 
@@ -24,7 +24,7 @@ var dotSize = 6.0;
 // ----- THREE VARIABLES -----
 var stats: Stats;
 var camera: THREE.OrthographicCamera;
-var controls;
+var controls: OrbitControls;
 var scene: THREE.Scene;
 var raycaster = new THREE.Raycaster();
 var id_to_tile: Map<number, CBMesh> = new Map();
@@ -135,7 +135,7 @@ function addCity(name, tile_id) {
     sprite.position.set(tile_pos.x - 8, tile_pos.y + 10, 100);
     sprite.scale.set(0.1, 0.1, 0.1)
     scene.add(sprite);
-    console.log(tile_id + " " + name)
+  //  console.log(tile_id + " " + name)
     tile_to_sprite[tile_id] = sprite
     tile_to_name[tile_id] = name
 
@@ -276,7 +276,7 @@ function genTiles() {
             var distance = tile.position.distanceTo(id_to_tile.get(id).position)
             var timeout = distance * 5 //the more distance there is, the more timeout (for a wave effect)
             //console.log(timeout)
-            var color = new THREE.Color("hsl(" + distance / 1.5 + ", " + color_s + "%, " + color_l + "%)")
+            var color = new THREE.Color("hsl(" + (150-(distance / 2.5)) + ", " + color_s + "%, " + color_l + "%)")
             var material = <THREE.MeshPhongMaterial>tile.material;
             var b = Math.random() >= 0.97
             function changeColor(material, color, id, b, time): () => any {
@@ -354,7 +354,7 @@ function generateColorPalette() {
     var i = 360 / (total - 1); // distribute the colors evenly on the hue range
 
     for (var x = 0; x < total; x++) {
-        var value = (i * x) / (360 / 250)
+        var value = (150 - ((i * x) / (360 / 150)))
         //console.log(value)
         var color = new THREE.Color("hsl(" + value + ", " + color_s + "%, " + color_l + "%)")
         colors.push(color); // you can also alternate the saturation and value for even more contrast between the colors
@@ -488,7 +488,7 @@ function setControls() {
     controls.maxAzimuthAngle = Math.PI / 3;
     controls.rotateSpeed = 0.5;
     controls.zoomSpeed = 1.2;
-    //  controls.rotateStart.set(-100,-100)
+    
 
 }
 

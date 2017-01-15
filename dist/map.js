@@ -4,7 +4,7 @@ const Stats = require("stats.js");
 const three_text2d_1 = require("three-text2d");
 const TWEEN = require("tween.js");
 require('awesomplete');
-var OrbitControls = require('three-orbit-controls')(THREE);
+const three_orbitcontrols_ts_1 = require("three-orbitcontrols-ts");
 var stops = require('../res/stops.json');
 var cities = require('../res/cities.json');
 var centers = require('../res/centers.json');
@@ -107,7 +107,6 @@ function addCity(name, tile_id) {
     sprite.position.set(tile_pos.x - 8, tile_pos.y + 10, 100);
     sprite.scale.set(0.1, 0.1, 0.1);
     scene.add(sprite);
-    console.log(tile_id + " " + name);
     tile_to_sprite[tile_id] = sprite;
     tile_to_name[tile_id] = name;
     var geometry = new THREE.CylinderGeometry(diameter, diameter, 0.01, 6);
@@ -211,7 +210,7 @@ function genTiles() {
             var tile = tiles[t_index];
             var distance = tile.position.distanceTo(id_to_tile.get(id).position);
             var timeout = distance * 5;
-            var color = new THREE.Color("hsl(" + distance / 1.5 + ", " + color_s + "%, " + color_l + "%)");
+            var color = new THREE.Color("hsl(" + (150 - (distance / 2.5)) + ", " + color_s + "%, " + color_l + "%)");
             var material = tile.material;
             var b = Math.random() >= 0.97;
             function changeColor(material, color, id, b, time) {
@@ -277,7 +276,7 @@ function generateColorPalette() {
     var total = max - min;
     var i = 360 / (total - 1);
     for (var x = 0; x < total; x++) {
-        var value = (i * x) / (360 / 250);
+        var value = (150 - ((i * x) / (360 / 150)));
         var color = new THREE.Color("hsl(" + value + ", " + color_s + "%, " + color_l + "%)");
         colors.push(color);
     }
@@ -376,7 +375,7 @@ function setLights() {
     scene.add(ambient);
 }
 function setControls() {
-    controls = new OrbitControls(camera, renderer.domElement);
+    controls = new three_orbitcontrols_ts_1.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.25;
     controls.enableZoom = true;
